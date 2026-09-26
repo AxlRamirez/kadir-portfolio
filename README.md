@@ -4,28 +4,73 @@ Repositorio del portafolio personal de Kadir Ramírez. Está construido con [Vit
 
 ## Estado actual
 
-La página tiene:
+El sitio tiene dos páginas, en español y en inglés:
 
-- Navegación con enlaces a las secciones; en escritorio queda fija arriba y marca la sección visible.
-- Portada con presentación, un avance de los proyectos (sus capturas apiladas, enlazadas a la sección), un resumen breve de lo actual y lo anterior, y enlaces de contacto (LinkedIn, WhatsApp y correo, con opción de copiar la dirección).
+| Página        | Español       | Inglés          | Contenido                                                  |
+| ------------- | ------------- | --------------- | ---------------------------------------------------------- |
+| Conocerme     | `/`           | `/en/`          | Proyectos, trayectoria, habilidades y formación            |
+| Mis servicios | `/servicios/` | `/en/services/` | Los servicios que ofrezco y cuatro prompts gratuitos       |
+
+Todas comparten:
+
+- Navegación con enlaces a las secciones; en escritorio queda fija arriba y marca la sección visible. Desde Servicios, los enlaces a Proyectos, Trayectoria, Habilidades y Formación llevan a esas secciones en la portada del mismo idioma.
+- Selector ES/EN en la cabecera, en escritorio y en móvil. Marca el idioma actual y lleva a la misma página en el otro idioma, conservando la sección si tiene equivalente (`/servicios/#prompt-seguridad` ↔ `/en/services/#prompt-security`); si no, lleva al inicio de esa página. No hay redirección automática según el idioma del navegador.
+- Portada con el nombre, un selector entre las dos páginas que marca la actual, un avance de los proyectos (sus capturas apiladas, enlazadas a la sección), un resumen breve de lo actual y lo anterior, y enlaces de contacto (LinkedIn, WhatsApp y correo, con opción de copiar la dirección). El texto y los botones principales cambian según la página.
+- Pie con la autoría del sitio y un enlace para volver arriba.
+
+En la portada:
+
 - Sección de proyectos con cuatro sitios publicados, cada uno con vista previa y enlace. El primero se presenta destacado, el segundo en dos columnas y los demás en formato compacto.
-- Laboratorio de datos: un analizador de ventas que funciona en el navegador (ver más abajo). La sección se muestra plegada, con una muestra del ejemplo, y se abre con «Abrir laboratorio».
 - Trayectoria: la formación en FWD, el trabajo como Software Developer en Moovin Logistics (julio de 2023 a julio de 2025) y el desarrollo actual de InsightCenter.
 - Sección de habilidades agrupadas por función, con una nota sobre inteligencia artificial vinculada al certificado de Elements of AI.
 - Sección de certificaciones y formación: programas de FWD Costa Rica y certificaciones con su enlace de verificación cuando existe. Cada documento se puede ampliar en un visor accesible con el teclado.
-- Pie con los enlaces de contacto.
+
+En Servicios:
+
+- Servicios: sitios web y landing pages, con un rango orientativo de US$350–500, y sistemas web a medida, que se cotizan después de conversar sobre los requisitos. De cada uno se ven siempre el título, la descripción, el precio y los enlaces a WhatsApp y al correo (con un mensaje o asunto inicial en el idioma de la página). El alcance y las condiciones están en un desplegable «Ver qué incluye» / «Ocultar detalles» (`<details>`), que funciona con el teclado y sin JavaScript.
+- Prompts gratuitos: auditoría de código, QA y accesibilidad, seguridad, y arquitectura y rendimiento. Cada uno se puede copiar con un botón que confirma la copia; si el portapapeles falla, el texto queda seleccionado para copiarlo a mano. Sin JavaScript, el texto completo sigue disponible en un desplegable.
 
 Todavía no incluye CV descargable, páginas de casos ni la demo de IA.
+
+### Rutas
+
+Cada ruta es un documento HTML propio (`index.html`, `servicios/index.html`, `en/index.html` y `en/services/index.html`), con su entrada de JavaScript en `src/entries/` (`es-home.tsx`, `es-services.tsx`, `en-home.tsx`, `en-services.tsx`). No hay router: se pasa de una página a otra con enlaces normales, así que abrir una URL directamente, recargar y usar atrás y adelante funcionan como en cualquier sitio estático. Al generar la versión final, el contenido de cada ruta se prerenderiza en su HTML.
+
+`src/routes.ts` es la fuente de las rutas: la lista de idiomas y páginas, la ruta de cada combinación y las anclas de cada sección en cada idioma (`#formacion` ↔ `#education`). De ahí salen los enlaces del menú, el selector de idioma, las entradas del build y el prerender.
+
+Las páginas comparten `SiteLayout` (cabecera, portada y pie). El build separa ese código común en un archivo propio, y cada ruta descarga además solo lo suyo: su página, los textos de su idioma y los de la interfaz común. Las portadas no descargan los servicios ni los prompts, Servicios no descarga los proyectos, la trayectoria ni las certificaciones, y ninguna ruta descarga los textos del otro idioma.
+
+El idioma, el título, la descripción y los enlaces `hreflang` de cada HTML los añade el plugin `pageHead` de `vite.config.ts` a partir de `src/head.ts` y los textos de `src/i18n/*/meta.ts`. La URL canónica solo se añade si se indica el dominio al compilar, porque la configuración actual no lo define:
+
+```bash
+SITE_URL=https://mi-dominio.com npm run build
+```
+
+Con `SITE_URL` (debe usar https), cada página recibe `<link rel="canonical">` y los enlaces entre idiomas pasan a ser absolutos, como piden los buscadores. Sin ella, esos enlaces son relativos a la raíz y no hay canónica.
+
+Para añadir una página: añádela a `pageIds` y `pagePaths` en `src/routes.ts` (con sus anclas), escribe sus textos y su título y descripción en cada idioma dentro de `src/i18n/`, crea su componente en `src/pages/`, una entrada por idioma en `src/entries/` y un HTML por idioma en la carpeta de cada ruta, y regístrala en `src/entry-server.tsx`. TypeScript avisa si falta alguna ruta, ancla o texto.
+
+### Textos e idiomas
+
+Los textos viven en `src/i18n/`, una carpeta por idioma con los mismos archivos: `site.ts` (cabecera, portada, pie y mensajes comunes), `home.ts`, `services.ts`, `prompts.ts` y `meta.ts` (título y descripción de cada página). Los tipos de `src/i18n/types.ts` describen cada diccionario, y los datos con una entrada por elemento usan `Record<Id, …>` con los identificadores de `src/ids.ts`, así que si falta una traducción, un proyecto o un prompt en un idioma, el build no compila. Los campos que no siempre se usan se declaran como `string | null` para que también haya que decidirlos en cada idioma.
+
+Lo que no depende del idioma (enlaces, imágenes, fechas, horas, títulos oficiales de las credenciales) está en `src/data/`. Los componentes son los mismos para los dos idiomas y reciben los textos por props o por el contexto de `src/components/siteContext.ts`, que también formatea las fechas según el idioma.
+
+Los nombres de marcas, tecnologías y títulos oficiales se mantienen. Cuando el inglés cita un texto que solo existe en español (el título de un certificado, el texto de una aplicación), va entre comillas “…” con su traducción; los títulos en otro idioma que el de la página se marcan con `lang` para que los lectores de pantalla los pronuncien bien.
+
+Para cambiar o añadir un texto, edítalo en los dos idiomas; `src/i18n/i18n.test.ts` comprueba que ambos diccionarios tengan la misma estructura, que no haya cadenas vacías, que la versión inglesa no contenga español fuera de las citas y que los mensajes de WhatsApp y los asuntos de correo estén en el idioma de su página.
 
 ### Diseño y movimiento
 
 Los colores, tipografías, medidas y tiempos de animación están en variables de `src/index.css`. Cada sección usa uno de cuatro temas (`theme-dark`, `theme-light`, `theme-wash`, `theme-petrol`) que definen roles como `--bg`, `--fg` o `--accent`; los componentes usan esos roles y no los colores directamente.
 
-La página se prerenderiza al generar la versión final, así que todo el contenido está en el HTML aunque JavaScript no cargue. La aparición escalonada de secciones (`src/motion/reveal.ts`) solo oculta elementos que JavaScript marcó y que están por debajo de la pantalla inicial, y se desactiva con `prefers-reduced-motion`. Las animaciones usan solo `transform` y `opacity`.
+Las páginas se prerenderizan al generar la versión final, así que todo el contenido está en el HTML aunque JavaScript no cargue. La aparición escalonada de secciones (`src/motion/reveal.ts`) solo oculta elementos que JavaScript marcó y que están por debajo de la pantalla inicial, y se desactiva con `prefers-reduced-motion`. Las animaciones usan solo `transform` y `opacity`; en la portada, el nombre y el texto principal solo se desplazan, sin opacidad, para que se lean desde el primer cuadro.
 
-Para añadir una credencial, agrega una entrada en `src/data/credentials.ts` y, si hay copia del documento, su imagen en `src/assets/credentials/` con un texto alternativo que transcriba su contenido.
+Para añadir una credencial, agrega su identificador en `src/ids.ts`, sus datos en `src/data/credentials.ts` y sus textos (tipo, emisor, resumen y un texto alternativo que transcriba el documento) en `home.ts` de cada idioma. Si hay copia del documento, su imagen va en `src/assets/credentials/`.
 
-Para añadir un proyecto, agrega una entrada en `src/data/projects.ts` y su captura en `src/assets/projects/`. Si todavía no hay captura, omite `preview` y la página mostrará «Vista previa pendiente».
+Para añadir un proyecto, agrega su identificador en `src/ids.ts`, su enlace y captura en `src/data/projects.ts` (la imagen en `src/assets/projects/`) y sus textos en `home.ts` de cada idioma. Si todavía no hay captura, omite `preview` y la página mostrará «Vista previa pendiente» o «Preview coming soon».
+
+Los servicios están en `src/i18n/*/services.ts` y los prompts en `src/i18n/*/prompts.ts`, separados de la interfaz. Las pruebas de `src/i18n/prompts.test.ts` comprueban que cada prompt, en los dos idiomas, siga pidiendo contexto, restricciones, evidencia con archivo y línea, la separación entre hallazgos e hipótesis, prioridades y verificación, y que las dos versiones tengan los mismos apartados.
 
 ## Requisitos
 
@@ -54,70 +99,47 @@ Las pruebas usan `node:test` y la ejecución nativa de TypeScript de Node (que e
 
 ```
 public/favicon.svg            Ícono de la pestaña (iniciales KR)
-src/main.tsx                  Punto de entrada: hidrata el HTML prerenderizado (o monta la aplicación si no lo hay)
-src/entry-server.tsx          Render a texto HTML que usa el prerender
-src/App.tsx                   Composición de la página
+index.html                    Documento HTML de / (Conocerme)
+servicios/index.html          Documento HTML de /servicios/ (Mis servicios)
+en/index.html                 Documento HTML de /en/ (About me)
+en/services/index.html        Documento HTML de /en/services/ (Services)
+src/routes.ts                 Idiomas, páginas, rutas y anclas de cada sección en cada idioma
+src/ids.ts                    Identificadores de proyectos, credenciales, servicios, prompts, etc.
+src/head.ts                   Título, descripción, hreflang y canónica de cada ruta
+src/client.tsx                Hidrata el HTML prerenderizado de una página (o la monta si no lo hay)
+src/entries/                  Una entrada de JavaScript por ruta
+src/entry-server.tsx          Render a texto HTML de cada ruta, que usa el prerender
+src/pages/                    Composición de cada página
+src/i18n/types.ts             Tipos de los textos de cada idioma
+src/i18n/es/, src/i18n/en/    Textos de la interfaz, las páginas, los servicios, los prompts y los metadatos
 src/index.css                 Paleta, temas, tipografía, medidas y estilos base
 src/motion/reveal.ts          Aparición escalonada de contenido al hacer scroll
+src/components/SiteLayout.tsx Estructura común: cabecera, portada y pie
+src/components/siteContext.ts Textos comunes del idioma actual y formato de fechas
 src/components/SiteHeader.*   Navegación
-src/components/Hero.*         Portada y contacto
+src/components/LanguageSwitch.tsx  Selector ES/EN
+src/components/Hero.*         Portada, selector de páginas y contacto
+src/components/useFinePointer.ts  Elige el enlace de WhatsApp según el tipo de puntero
 src/components/Projects.*     Sección de proyectos
 src/components/ProjectEntry.* Presentación de un proyecto
 src/components/Career.*       Trayectoria
 src/components/Skills.*       Habilidades
 src/components/Credentials.*  Certificaciones y formación
 src/components/CredentialViewer.tsx  Visor ampliado de un documento (diálogo modal)
+src/components/Services.*     Servicios y su desplegable de alcance
+src/components/FreePrompts.*  Prompts gratuitos y su botón de copiar
 src/components/SiteFooter.*   Pie de página
-src/components/lab/LabSection.*  Sección del laboratorio: cabecera, muestra y apertura del analizador
-src/components/lab/           Resto de componentes del laboratorio (el analizador se carga al abrirlo)
-src/lab/                      Lógica del laboratorio, sin React: parser CSV, validación, cálculos, observaciones y pruebas
-src/data/projects.ts          Datos de los proyectos (textos, enlaces, vistas previas)
-src/data/skills.ts            Datos de las habilidades y sus grupos
-src/data/credentials.ts       Datos de las certificaciones y la formación
-src/data/career.ts            Pasos de la trayectoria
-src/data/contact.ts           Correo y enlaces de contacto (portada y pie)
+src/data/projects.ts          Enlaces y vistas previas de los proyectos
+src/data/skills.ts            Habilidades de cada grupo
+src/data/credentials.ts       Títulos oficiales, fechas, documentos y verificación de las credenciales
+src/data/career.ts            Pasos de la trayectoria y sus enlaces
+src/data/contact.ts           Correo, WhatsApp y enlaces de contacto
 src/assets/projects/          Vistas previas de los proyectos (WebP)
 src/assets/credentials/       Copias de los certificados para la web (WebP)
 src/assets/icons/             Íconos de tecnologías (SVG)
 src/assets/fonts/             Tipografía Newsreader y su licencia
-index.html                    Documento HTML base
-scripts/prerender.mjs         Inserta el HTML renderizado en dist/index.html después del build
+scripts/prerender.mjs         Inserta el HTML renderizado de cada página en dist/ después del build
 ```
-
-## Laboratorio de datos
-
-Analiza ventas a partir de un CSV con las columnas `fecha`, `producto`, `cantidad` y `precio_unitario`. Al entrar muestra un ejemplo ficticio (`src/lab/sampleData.ts`), que se puede descargar como muestra y restablecer. También incluye un ejemplo con errores para ver la validación. Los archivos se leen con la API `File` del navegador y no se envían a ningún servidor. Si el navegador no puede leer el archivo (por ejemplo, porque se movió o se eliminó después de elegirlo), se muestra un error y se puede elegir otro. No usa IA: todo sale de cálculos y reglas explícitas.
-
-La sección arranca plegada y el código del analizador (`DataLab.tsx` y sus dependencias) se descarga al abrirla; se adelanta la descarga cuando el puntero o el foco llegan al botón. Una vez abierto, el analizador sigue montado aunque se cierre, así que conserva el archivo, los filtros y los resultados. Los enlaces a `#laboratorio` lo abren y llevan a la sección; los enlaces a `#laboratorio-herramienta` lo abren y llevan el foco al analizador.
-
-Flujo: `encoding.ts` decodifica los bytes como UTF-8, `csv.ts` separa registros y celdas, `validation.ts` convierte cada registro en una venta o en errores, `analysis.ts` calcula los totales e `insights.ts` aplica las reglas de observaciones. `pipeline.ts` une esos pasos.
-
-### Decisiones de formato
-
-- **Encabezado:** es obligatorio y admite cualquier orden. Mayúsculas, tildes, espacios y guiones no importan («Precio Unitario» equivale a `precio_unitario`). Las columnas adicionales se ignoran y se informa cuáles fueron.
-- **Codificación:** solo UTF-8, con o sin BOM (en Excel, «CSV UTF-8»). El archivo se lee como bytes y se decodifica sin adivinar otras codificaciones. Si el resultado contiene caracteres de reemplazo (U+FFFD), por ejemplo en un CSV guardado como ANSI/Windows-1252, se rechaza completo y se indica la primera línea afectada con un extracto. Los archivos UTF-16 («Texto Unicode» de Excel) se reconocen por su marca inicial para dar un mensaje más claro, pero también se rechazan. Un U+FFFD escrito a propósito en el archivo se rechaza igual, porque no se puede distinguir de un daño.
-- **Separador:** coma o punto y coma, detectado en la primera línea. Los campos entre comillas pueden contener separadores, saltos de línea y comillas dobles escapadas (`""`). Se elimina el BOM de Excel.
-- **Fechas:** solo `AAAA-MM-DD`, y deben existir en el calendario. `05/03/2026` se rechaza con una sugerencia, porque puede significar 5 de marzo o 3 de mayo.
-- **Decimales:** punto o coma (`12.50` o `12,50`). Se rechazan los separadores de miles (`1,250.00`) y los símbolos de moneda.
-- **Cantidad:** mayor que 0, con hasta 3 decimales (productos por peso o volumen).
-- **Precio unitario:** mayor que 0, con hasta 2 decimales.
-- **Negativos y ceros:** se rechazan. La herramienta analiza ventas; las devoluciones y las entregas sin costo necesitarían otro modelo.
-- **Líneas vacías:** se omiten y se informa su número. Un separador sobrante al final de la línea no cuenta como columna.
-- **Productos:** se agrupan sin distinguir mayúsculas ni espacios repetidos y conservan el nombre de su primera aparición. Un salto de línea dentro del nombre cuenta como espacio.
-- **Todo o nada:** si algún registro tiene errores no se calcula nada y se listan todos los problemas con su línea, columna y valor. Así el análisis nunca se basa, sin avisar, en una parte del archivo.
-- **Límites:** 1 MB y 5 000 registros de datos.
-- **Números de línea:** son las líneas físicas del archivo, las mismas que muestra un editor de texto (el encabezado suele ser la línea 1). Si un campo entre comillas ocupa varias líneas, el registro se identifica por su rango («Líneas 5–7»), y los registros siguientes conservan su línea real. Una comilla sin cerrar se informa en la línea donde se abre.
-
-### Decisiones de cálculo
-
-- **Importes exactos:** los importes se guardan en céntimos enteros y las cantidades en milésimas, leídos desde el texto, para evitar errores de coma flotante. El ingreso de cada registro es cantidad × precio, redondeado al céntimo (mitad hacia arriba).
-- **Moneda:** el archivo no indica moneda, así que los importes se muestran sin símbolo.
-- **Cantidades por producto:** se suman solo dentro de cada producto. No hay total de unidades y la evolución por fecha solo permite ver cantidades cuando se elige un producto.
-- **Fechas sin registros:** la evolución por fecha muestra solo las fechas presentes. Una fecha que falta no se trata como cero.
-- **Observaciones:** solo se generan si hay evidencia suficiente, y cada una indica su cálculo y las líneas que la respaldan:
-  - Producto con mayores ingresos: requiere al menos dos productos y que no haya empate.
-  - Mayor caída entre fechas consecutivas del archivo: requiere al menos dos fechas y una caída de al menos el 20 %. Avisa si entre ambas fechas hay días sin registros.
-  - Fecha con mayores ingresos: requiere al menos dos fechas y que no haya empate.
 
 ## Procedencia de recursos externos
 

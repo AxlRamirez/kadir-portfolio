@@ -13,62 +13,39 @@ import postgresqlIcon from '../assets/icons/postgresql.svg'
 import pythonIcon from '../assets/icons/python.svg'
 import reactIcon from '../assets/icons/react.svg'
 import typescriptIcon from '../assets/icons/typescript.svg'
+import { skillGroupIds, type SkillGroupId } from '../ids.ts'
 
 export type Skill = {
   name: string
   icon: string
 }
 
-export type SkillGroup = {
-  id: string
-  title: string
-  description: string
-  skills: Skill[]
+/** Tecnologías de cada grupo; el nombre y la descripción del grupo están en src/i18n/{es,en}/home.ts. */
+const skillsByGroup: Record<SkillGroupId, Skill[]> = {
+  frontend: [
+    { name: 'JavaScript', icon: javascriptIcon },
+    { name: 'TypeScript', icon: typescriptIcon },
+    { name: 'HTML', icon: html5Icon },
+    { name: 'CSS', icon: cssIcon },
+    { name: 'React', icon: reactIcon },
+    { name: 'jQuery', icon: jqueryIcon },
+    { name: 'Bootstrap', icon: bootstrapIcon },
+  ],
+  backend: [
+    { name: 'Node.js', icon: nodejsIcon },
+    { name: 'NestJS', icon: nestjsIcon },
+    { name: 'Firebase', icon: firebaseIcon },
+  ],
+  data: [
+    // SQL es un lenguaje estándar sin logotipo oficial: se usa un símbolo genérico de base de datos.
+    { name: 'SQL', icon: databaseSymbol },
+    { name: 'PostgreSQL', icon: postgresqlIcon },
+    { name: 'Python', icon: pythonIcon },
+  ],
+  tools: [
+    { name: 'Git', icon: gitIcon },
+    { name: 'Docker', icon: dockerIcon },
+  ],
 }
 
-export const skillGroups: SkillGroup[] = [
-  {
-    id: 'frontend',
-    title: 'Lenguajes y frontend',
-    description: 'Interfaces web, desde la maquetación hasta la lógica del cliente.',
-    skills: [
-      { name: 'JavaScript', icon: javascriptIcon },
-      { name: 'TypeScript', icon: typescriptIcon },
-      { name: 'HTML', icon: html5Icon },
-      { name: 'CSS', icon: cssIcon },
-      { name: 'React', icon: reactIcon },
-      { name: 'jQuery', icon: jqueryIcon },
-      { name: 'Bootstrap', icon: bootstrapIcon },
-    ],
-  },
-  {
-    id: 'backend',
-    title: 'Backend e integración',
-    description: 'APIs, servicios y conexión entre sistemas.',
-    skills: [
-      { name: 'Node.js', icon: nodejsIcon },
-      { name: 'NestJS', icon: nestjsIcon },
-      { name: 'Firebase', icon: firebaseIcon },
-    ],
-  },
-  {
-    id: 'data',
-    title: 'Datos y automatización',
-    description: 'Consultas, bases de datos relacionales y procesos ETL.',
-    skills: [
-      // SQL es un lenguaje estándar sin logotipo oficial: se usa un símbolo genérico de base de datos.
-      { name: 'SQL', icon: databaseSymbol },
-      { name: 'PostgreSQL', icon: postgresqlIcon },
-      { name: 'Python', icon: pythonIcon },
-    ],
-  },
-  {
-    id: 'tools',
-    title: 'Herramientas y flujo de trabajo',
-    description: 'Control de versiones y entornos reproducibles.',
-    skills: [
-      { name: 'Git', icon: gitIcon },
-      { name: 'Docker', icon: dockerIcon },
-    ],
-  },
-]
+export const skillGroups = skillGroupIds.map((id) => ({ id, skills: skillsByGroup[id] }))

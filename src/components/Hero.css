@@ -22,6 +22,44 @@
   gap: 1.75rem;
 }
 
+/* Las dos páginas del sitio como un interruptor de dos posiciones: la actual queda rellena con el acento. */
+.hero-pages {
+  justify-self: start;
+}
+
+.hero-pages-list {
+  display: flex;
+  gap: 0.25rem;
+  padding: 0.25rem;
+  border: 1px solid var(--rule-strong);
+  border-radius: calc(var(--radius) * 2);
+}
+
+.hero-pages a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 2.75rem;
+  padding-inline: 0.9rem;
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--fg-muted);
+  text-decoration: none;
+  border-radius: var(--radius);
+}
+
+.hero-pages a:hover {
+  color: var(--fg);
+  background: rgb(169 195 207 / 0.1);
+}
+
+.hero-pages a[aria-current='page'] {
+  color: var(--on-accent);
+  background: var(--accent-strong);
+}
+
 /* El nombre firma la portada en una línea; la frase principal es la que lleva el mayor peso de lectura. */
 .hero-title {
   font-family: var(--font-display);
@@ -312,6 +350,7 @@
 }
 
 @media (prefers-reduced-motion: no-preference) {
+  .hero-pages a,
   .contact-value,
   .contact-arrow,
   .copy-button {
@@ -328,31 +367,32 @@
   }
 
   /* Entrada de la portada: solo CSS, así que también ocurre sobre el HTML prerenderizado y termina visible
-     aunque el JavaScript no llegue a cargar. */
+     aunque el JavaScript no llegue a cargar. El nombre y el texto principal solo se asientan, sin opacidad:
+     se pueden leer desde el primer cuadro. */
+  .hero-pages,
   .hero-eyebrow,
   .hero-title-line,
   .hero-lead,
-  .hero-sub,
+  .hero-sub {
+    animation: hero-settle 700ms var(--ease-out) both;
+  }
+
   .hero-actions,
   .hero-facts,
   .hero-contact {
     animation: hero-rise 900ms var(--ease-out) both;
   }
 
-  .hero-title-line:nth-child(1) {
+  .hero-title-line:nth-child(2) {
     animation-delay: 60ms;
   }
 
-  .hero-title-line:nth-child(2) {
-    animation-delay: 140ms;
-  }
-
   .hero-lead {
-    animation-delay: 240ms;
+    animation-delay: 120ms;
   }
 
   .hero-sub {
-    animation-delay: 300ms;
+    animation-delay: 160ms;
   }
 
   .hero-actions {
@@ -367,8 +407,9 @@
     animation-delay: 520ms;
   }
 
-  /* Las cartas salen de detrás de la primera y se reparten una sola vez. «backwards» y no «both»: al terminar,
-     transform vuelve a quedar libre para la transición de apertura. */
+  /* Las cartas salen de detrás de la primera y se reparten una sola vez; la primera las tapa mientras esperan,
+     así que no hace falta ocultarlas. «backwards» y no «both»: al terminar, transform vuelve a quedar libre
+     para la transición de apertura. */
   .work-card {
     animation: deck-deal 800ms var(--ease-out) backwards;
     animation-delay: calc(380ms + var(--i) * 110ms);
@@ -383,34 +424,45 @@
     transition: transform var(--duration-base) var(--ease-out);
   }
 
-  /* Al señalar el mazo o el botón «Ver proyectos», las cartas se abren un poco y la flecha baja. */
-  .hero:has(.hero-cta:focus-visible) .work-card {
+  /* Al señalar el mazo, o en la portada de inicio el botón «Ver proyectos», las cartas se abren un poco y la
+     flecha se mueve. En Servicios el botón lleva a otra sección, así que no abre el mazo. */
+  .hero[data-page='home']:has(.hero-cta:focus-visible) .work-card {
     transform: translate(calc(var(--i) * var(--spread)), calc(var(--i) * -1 * var(--spread)));
   }
 
-  .hero:has(.hero-cta:focus-visible) .work-card::after {
+  .hero[data-page='home']:has(.hero-cta:focus-visible) .work-card::after {
     opacity: calc(var(--i) * 0.06);
   }
 
-  .hero:has(.hero-cta:focus-visible) .work-deck-caption .arrow {
+  .hero[data-page='home']:has(.hero-cta:focus-visible) .work-deck-caption .arrow {
     transform: translateY(0.2rem);
   }
 
   @media (hover: hover) {
     .work-deck:hover .work-card,
-    .hero:has(.hero-cta:hover) .work-card {
+    .hero[data-page='home']:has(.hero-cta:hover) .work-card {
       transform: translate(calc(var(--i) * var(--spread)), calc(var(--i) * -1 * var(--spread)));
     }
 
     .work-deck:hover .work-card::after,
-    .hero:has(.hero-cta:hover) .work-card::after {
+    .hero[data-page='home']:has(.hero-cta:hover) .work-card::after {
       opacity: calc(var(--i) * 0.06);
     }
 
     .work-deck:hover .work-deck-caption .arrow,
-    .hero:has(.hero-cta:hover) .work-deck-caption .arrow {
+    .hero[data-page='home']:has(.hero-cta:hover) .work-deck-caption .arrow {
       transform: translateY(0.2rem);
     }
+
+    .hero[data-page='services'] .work-deck:hover .work-deck-caption .arrow {
+      transform: translateX(0.2rem);
+    }
+  }
+}
+
+@keyframes hero-settle {
+  from {
+    transform: translate3d(0, 0.75rem, 0);
   }
 }
 
@@ -423,7 +475,6 @@
 
 @keyframes deck-deal {
   from {
-    opacity: 0;
     transform: translate(calc(-1 * var(--x)), var(--y));
   }
 }
@@ -435,6 +486,7 @@
     row-gap: 2rem;
   }
 
+  .hero-pages,
   .hero-eyebrow,
   .hero-title,
   .hero-lead,
@@ -464,7 +516,8 @@
     row-gap: 1.25rem;
   }
 
-  /* Texto, botones y datos breves en la columna izquierda; el mazo ocupa toda la derecha. */
+  /* Páginas, texto, botones y datos breves en la columna izquierda; el mazo ocupa toda la derecha. */
+  .hero-pages,
   .hero-eyebrow,
   .hero-title,
   .hero-lead,
@@ -473,32 +526,37 @@
     grid-column: 1 / span 7;
   }
 
-  .hero-eyebrow {
+  .hero-pages {
     grid-row: 1;
+    margin-bottom: 0.75rem;
   }
 
-  .hero-title {
+  .hero-eyebrow {
     grid-row: 2;
   }
 
-  .hero-lead {
+  .hero-title {
     grid-row: 3;
+  }
+
+  .hero-lead {
+    grid-row: 4;
   }
 
   .hero-sub {
     grid-column: 1 / span 6;
-    grid-row: 4;
+    grid-row: 5;
     margin-top: 0;
   }
 
   .hero-actions {
-    grid-row: 5;
+    grid-row: 6;
     margin-top: 0.5rem;
   }
 
   .hero-work {
     grid-column: 8 / -1;
-    grid-row: 1 / span 6;
+    grid-row: 1 / span 7;
     align-self: center;
     justify-self: end;
     width: 100%;
@@ -506,13 +564,13 @@
   }
 
   .hero-facts {
-    grid-row: 6;
+    grid-row: 7;
     max-width: 34rem;
     margin-top: 1rem;
   }
 
   .hero-contact {
-    grid-row: 7;
+    grid-row: 8;
     margin-top: 1.5rem;
   }
 

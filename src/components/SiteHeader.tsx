@@ -1,24 +1,28 @@
 import { useEffect, useState } from 'react'
+import type { NavSection } from '../i18n/types.ts'
+import { pagePaths, sectionAnchors, sectionHref, type Locale, type PageId } from '../routes.ts'
+import LanguageSwitch from './LanguageSwitch.tsx'
+import { formatDate, useSite } from './siteContext.ts'
 import './SiteHeader.css'
 
-const links = [
-  { id: 'proyectos', label: 'Proyectos' },
-  { id: 'laboratorio', label: 'Laboratorio' },
-  { id: 'trayectoria', label: 'Trayectoria' },
-  { id: 'habilidades', label: 'Habilidades' },
-  { id: 'formacion', label: 'Formación' },
-  { id: 'contacto', label: 'Contacto' },
-]
+const UPDATED = '2026-09-26'
 
-// El contacto vive en la portada y en el pie: no se marca como sección activa.
-const trackedIds = links.map((link) => link.id).filter((id) => id !== 'contacto')
+const navSections: NavSection[] = ['projects', 'career', 'skills', 'education', 'services', 'contact']
 
-function useActiveSection(): string | null {
+// Solo se marcan las secciones de la página actual. El contacto es un bloque dentro de la portada, no una
+// sección propia: no se marca como sección activa.
+function trackedIdsFor(locale: Locale, page: PageId) {
+  return navSections.filter((section) => sectionAnchors[section].page === page).map((section) => sectionAnchors[section][locale])
+}
+
+function useActiveSection(locale: Locale, page: PageId): string | null {
   const [active, setActive] = useState<string | null>(null)
 
   useEffect(() => {
     if (!('IntersectionObserver' in window)) return
-    const sections = trackedIds.map((id) => document.getElementById(id)).filter((section) => section !== null)
+    const sections = trackedIdsFor(locale, page)
+      .map((id) => document.getElementById(id))
+      .filter((section) => section !== null)
     // La banda de detección es la franja central de la pantalla: una sección está activa mientras la cruza.
     const observer = new IntersectionObserver(
       (entries) => {
@@ -31,34 +35,47 @@ function useActiveSection(): string | null {
     )
     sections.forEach((section) => observer.observe(section))
     return () => observer.disconnect()
-  }, [])
+  }, [locale, page])
 
   return active
 }
 
 function SiteHeader() {
-  const active = useActiveSection()
+  const { page, text } = useSite()
+  const { locale } = text
+  const active = useActiveSection(locale, page)
 
   return (
     <header className="site-header theme-dark">
       <div className="container site-header-inner">
-        <a className="brand" href="#top">
-          <span className="brand-mark" aria-hidden="true">
-            KR
-          </span>
-          <span className="brand-name">Portafolio actualizado el 25 de septiembre de 2026</span>
-        </a>
-        <nav aria-label="Principal">
+        {/* La fecha acompaña a la marca pero no forma parte del enlace: el nombre del enlace dice adónde lleva.
+            En inicio sube al principio sin recargar; en Servicios lleva a la página de inicio del mismo idioma. */}
+        <div className="brand">
+          <a className="brand-link" href={page === 'home' ? '#top' : pagePaths[locale].home}>
+            <span className="brand-mark" aria-hidden="true">
+              KR
+            </span>
+            <span className="visually-hidden">{text.header.homeLabel}</span>
+          </a>
+          <p className="brand-note">
+            {text.header.updatedPrefix} <time dateTime={UPDATED}>{formatDate(UPDATED, text.formatLocale, 'long')}</time>
+          </p>
+        </div>
+        <nav className="site-nav-region" aria-label={text.header.navLabel}>
           <ul className="site-nav" role="list">
-            {links.map((link) => (
-              <li key={link.id}>
-                <a href={`#${link.id}`} aria-current={active === link.id ? 'true' : undefined}>
-                  {link.label}
+            {navSections.map((section) => (
+              <li key={section}>
+                <a
+                  href={sectionHref(locale, page, section)}
+                  aria-current={active === sectionAnchors[section][locale] ? 'true' : undefined}
+                >
+                  {text.header.nav[section]}
                 </a>
               </li>
             ))}
           </ul>
         </nav>
+        <LanguageSwitch />
       </div>
       <span className="scroll-progress" aria-hidden="true" />
     </header>

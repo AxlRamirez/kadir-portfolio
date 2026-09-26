@@ -373,6 +373,42 @@ html {
   transform: none;
 }
 
+/* Desplegable nativo (<details>) con un signo que gira de + a ×; el estado lo anuncia el propio elemento.
+   Si el resumen lleva dos etiquetas, se muestra la que corresponde al estado, también sin JavaScript. */
+.disclosure > summary {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  min-height: 2.75rem;
+  font-weight: 600;
+  cursor: pointer;
+  list-style: none;
+}
+
+.disclosure > summary::-webkit-details-marker {
+  display: none;
+}
+
+.disclosure > summary::before {
+  content: '';
+  flex: none;
+  width: 0.75rem;
+  height: 0.75rem;
+  background:
+    linear-gradient(currentColor, currentColor) center / 100% 1.5px no-repeat,
+    linear-gradient(currentColor, currentColor) center / 1.5px 100% no-repeat;
+  color: var(--accent);
+}
+
+.disclosure[open] > summary::before {
+  transform: rotate(45deg);
+}
+
+.disclosure:not([open]) .disclosure-label-open,
+.disclosure[open] .disclosure-label-closed {
+  display: none;
+}
+
 /* Revelación al hacer scroll. El estado «pending» solo lo pone el script, y solo en lo que está por debajo
    de la pantalla: sin JavaScript, o con movimiento reducido, todo el contenido se ve desde el principio. */
 [data-reveal-state='pending'] {
@@ -410,6 +446,10 @@ html {
 
   .button:active {
     transform: scale(0.98);
+  }
+
+  .disclosure > summary::before {
+    transition: transform var(--duration-base) var(--ease-out);
   }
 }
 

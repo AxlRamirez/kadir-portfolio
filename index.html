@@ -11,18 +11,14 @@
       type="font/woff2"
       crossorigin
     />
-    <meta
-      name="description"
-      content="Portafolio de Kadir Ramírez, desarrollador full stack: aplicaciones web de principio a fin, desde landing pages hasta herramientas operativas y plataformas."
-    />
     <meta name="theme-color" content="#262931" />
-    <title>Kadir Ramírez — Desarrollador full stack</title>
-    <!-- Sin JavaScript el laboratorio no puede abrirse: se oculta su botón y quedan la muestra y el aviso.
+    <!-- El título, la descripción y los enlaces a la otra versión de idioma los añade vite.config.ts desde src/i18n. -->
+    <!-- Sin JavaScript no se puede copiar al portapapeles: se oculta el botón y queda el enlace al correo.
          El selector es más específico que el del botón porque la hoja de estilos del sitio se inserta después. -->
-    <noscript><style>.lab .lab-toggle-button { display: none; }</style></noscript>
+    <noscript><style>.contact-list .copy-button { display: none; }</style></noscript>
   </head>
   <body>
     <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
+    <script type="module" src="/src/entries/es-home.tsx"></script>
   </body>
 </html>

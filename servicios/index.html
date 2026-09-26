@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="preload"
+      href="/src/assets/fonts/newsreader-latin-wght-normal.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
+    <meta name="theme-color" content="#262931" />
+    <!-- El título, la descripción y los enlaces a la otra versión de idioma los añade vite.config.ts desde src/i18n. -->
+    <!-- Sin JavaScript no se puede copiar al portapapeles: se ocultan los botones y quedan el enlace al correo y el
+         texto de cada prompt, que se puede seleccionar. Los selectores son más específicos que los de los botones
+         porque la hoja de estilos del sitio se inserta después. -->
+    <noscript><style>.contact-list .copy-button, .prompt .prompt-copy { display: none; }</style></noscript>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/entries/es-services.tsx"></script>
+  </body>
+</html>

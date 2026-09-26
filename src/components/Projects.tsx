@@ -1,5 +1,8 @@
 import { projects } from '../data/projects.ts'
+import type { HomeText } from '../i18n/types.ts'
+import { sectionAnchors } from '../routes.ts'
 import ProjectEntry, { type ProjectVariant } from './ProjectEntry.tsx'
+import { useSite } from './siteContext.ts'
 import './Projects.css'
 
 // El primero es el proyecto destacado, el segundo alterna la composición y el resto se presenta en pares.
@@ -9,21 +12,20 @@ function variantFor(index: number): ProjectVariant {
   return 'compact'
 }
 
-function Projects() {
+function Projects({ text }: { text: HomeText['projects'] }) {
+  const { text: site } = useSite()
+
   return (
-    <section id="proyectos" className="projects theme-light" aria-labelledby="projects-title">
+    <section id={sectionAnchors.projects[site.locale]} className="projects theme-light" aria-labelledby="projects-title">
       <div className="container">
         <header className="section-header" data-reveal="">
           <p className="section-index" aria-hidden="true">
-            <span className="section-index-number">01</span> Trabajo publicado
+            <span className="section-index-number">01</span> {text.index}
           </p>
           <h2 id="projects-title" className="section-title">
-            Proyectos
+            {text.title}
           </h2>
-          <p className="section-intro">
-            Una selección de sitios y aplicaciones publicados. Cada uno enlaza a su versión en línea. Después de los
-            proyectos hay un <a href="#laboratorio">laboratorio de datos</a> que puedes probar aquí mismo.
-          </p>
+          <p className="section-intro">{text.intro}</p>
         </header>
 
         <ol className="project-list" role="list">
@@ -31,6 +33,8 @@ function Projects() {
             <ProjectEntry
               key={project.id}
               project={project}
+              text={text}
+              newTab={site.newTab}
               index={index}
               total={projects.length}
               variant={variantFor(index)}

@@ -1,4 +1,5 @@
 import { PREVIEW_HEIGHT, PREVIEW_WIDTH, type Project } from '../data/projects.ts'
+import type { HomeText } from '../i18n/types.ts'
 
 export type ProjectVariant = 'feature' | 'split' | 'compact'
 
@@ -11,15 +12,18 @@ const previewSizes: Record<ProjectVariant, string> = {
 
 type ProjectEntryProps = {
   project: Project
+  text: HomeText['projects']
+  newTab: string
   index: number
   total: number
   variant: ProjectVariant
 }
 
-function ProjectEntry({ project, index, total, variant }: ProjectEntryProps) {
+function ProjectEntry({ project, text, newTab, index, total, variant }: ProjectEntryProps) {
   const number = String(index + 1).padStart(2, '0')
   const noteId = `${project.id}-note`
   const host = new URL(project.url).host
+  const { name, kind, description, context, note, previewAlt } = text.items[project.id]
 
   return (
     <li className={`project project-${variant}`} data-reveal="">
@@ -29,15 +33,15 @@ function ProjectEntry({ project, index, total, variant }: ProjectEntryProps) {
             {number}
             <span className="project-total"> / {String(total).padStart(2, '0')}</span>
           </span>
-          <span>{project.kind}</span>
+          <span>{kind}</span>
         </p>
-        <h3 className="project-name">{project.name}</h3>
+        <h3 className="project-name">{name}</h3>
         {variant !== 'feature' && <p className="project-host">{host}</p>}
-        <p className="project-description">{project.description}</p>
-        <p className="project-context">{project.context}</p>
-        {project.note && (
+        <p className="project-description">{description}</p>
+        <p className="project-context">{context}</p>
+        {note && (
           <p id={noteId} className="project-note">
-            <span className="project-note-label">Nota:</span> {project.note}
+            <span className="project-note-label">{text.noteLabel}</span> {note}
           </p>
         )}
         <a
@@ -45,13 +49,10 @@ function ProjectEntry({ project, index, total, variant }: ProjectEntryProps) {
           href={project.url}
           target="_blank"
           rel="noreferrer"
-          aria-describedby={project.note ? noteId : undefined}
+          aria-describedby={note ? noteId : undefined}
         >
-          Visitar sitio
-          <span className="visually-hidden">
-            {' '}
-            {project.name} (se abre en una pestaña nueva)
-          </span>
+          {text.visit}
+          <span className="visually-hidden">{` ${name} ${newTab}`}</span>
           <span className="arrow" aria-hidden="true">
             ↗
           </span>
@@ -70,14 +71,14 @@ function ProjectEntry({ project, index, total, variant }: ProjectEntryProps) {
             src={project.preview.src}
             srcSet={project.preview.srcSet}
             sizes={previewSizes[variant]}
-            alt={project.preview.alt}
+            alt={previewAlt}
             width={PREVIEW_WIDTH}
             height={PREVIEW_HEIGHT}
             loading="lazy"
             decoding="async"
           />
         ) : (
-          <p className="project-preview-pending">Vista previa pendiente</p>
+          <p className="project-preview-pending">{text.previewPending}</p>
         )}
       </div>
     </li>

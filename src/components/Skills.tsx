@@ -1,18 +1,23 @@
 import { skillGroups } from '../data/skills.ts'
+import type { HomeText } from '../i18n/types.ts'
+import { credentialAnchor, sectionAnchors } from '../routes.ts'
+import { useSite } from './siteContext.ts'
 import './Skills.css'
 
-function Skills() {
+function Skills({ text }: { text: HomeText['skills'] }) {
+  const { locale } = useSite().text
+
   return (
-    <section id="habilidades" className="skills theme-wash" aria-labelledby="skills-title">
+    <section id={sectionAnchors.skills[locale]} className="skills theme-wash" aria-labelledby="skills-title">
       <div className="container">
         <header className="skills-header" data-reveal="">
           <p className="section-index" aria-hidden="true">
-            <span className="section-index-number">04</span> Stack técnico
+            <span className="section-index-number">03</span> {text.index}
           </p>
           <h2 id="skills-title" className="skills-title">
-            Habilidades
+            {text.title}
           </h2>
-          <p className="section-intro">Tecnologías con las que trabajo, agrupadas por la función que cumplen.</p>
+          <p className="section-intro">{text.intro}</p>
         </header>
 
         <div className="skill-groups">
@@ -27,9 +32,9 @@ function Skills() {
                 {String(group.skills.length).padStart(2, '0')}
               </p>
               <h3 id={`skills-${group.id}-title`} className="skill-group-title">
-                {group.title}
+                {text.groups[group.id].title}
               </h3>
-              <p className="skill-group-description">{group.description}</p>
+              <p className="skill-group-description">{text.groups[group.id].description}</p>
               <ul className="skill-list" role="list">
                 {group.skills.map((skill) => (
                   <li key={skill.name} className="skill">
@@ -52,14 +57,15 @@ function Skills() {
 
         <aside className="skills-note" aria-labelledby="skills-ai-title" data-reveal="">
           <h3 id="skills-ai-title" className="skills-note-title">
-            Inteligencia artificial
+            {text.ai.title}
           </h3>
           <p className="skills-note-text">
-            Conozco sus fundamentos y aplicaciones: completé <strong>Elements of AI</strong>, de la Universidad de
-            Helsinki y MinnaLearn. Me interesa integrarla en productos de software y en el análisis de datos.
+            {text.ai.text.before}
+            <strong>{text.ai.text.strong}</strong>
+            {text.ai.text.after}
           </p>
-          <a className="text-link skills-note-link" href="#credencial-elements-of-ai">
-            Ver el certificado
+          <a className="text-link skills-note-link" href={`#${credentialAnchor(locale, 'elements-of-ai')}`}>
+            {text.ai.link}
             <span className="arrow" aria-hidden="true">
               ↓
             </span>
