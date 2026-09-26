@@ -2,7 +2,7 @@ import { useEffect } from 'react'
 import Career from './components/Career.tsx'
 import Credentials from './components/Credentials.tsx'
 import Hero from './components/Hero.tsx'
-import DataLab from './components/lab/DataLab.tsx'
+import LabSection from './components/lab/LabSection.tsx'
 import Projects from './components/Projects.tsx'
 import SiteFooter from './components/SiteFooter.tsx'
 import SiteHeader from './components/SiteHeader.tsx'
@@ -21,7 +21,7 @@ function App() {
       <main id="contenido">
         <Hero />
         <Projects />
-        <DataLab />
+        <LabSection />
         <Career />
         <Skills />
         <Credentials />

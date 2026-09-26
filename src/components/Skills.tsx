@@ -49,6 +49,22 @@ function Skills() {
             </section>
           ))}
         </div>
+
+        <aside className="skills-note" aria-labelledby="skills-ai-title" data-reveal="">
+          <h3 id="skills-ai-title" className="skills-note-title">
+            Inteligencia artificial
+          </h3>
+          <p className="skills-note-text">
+            Conozco sus fundamentos y aplicaciones: completé <strong>Elements of AI</strong>, de la Universidad de
+            Helsinki y MinnaLearn. Me interesa integrarla en productos de software y en el análisis de datos.
+          </p>
+          <a className="text-link skills-note-link" href="#credencial-elements-of-ai">
+            Ver el certificado
+            <span className="arrow" aria-hidden="true">
+              ↓
+            </span>
+          </a>
+        </aside>
       </div>
     </section>
   )

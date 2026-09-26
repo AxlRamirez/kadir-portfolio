@@ -130,7 +130,7 @@ function Hero() {
           <div className="hero-fact">
             <dt>Antes</dt>
             <dd>
-              Cerca de dos años en <strong>Moovin</strong>, de la pasantía a la contratación directa.
+              Software Developer en <strong>Moovin Logistics</strong>, de 2023 a 2025.
             </dd>
           </div>
         </dl>

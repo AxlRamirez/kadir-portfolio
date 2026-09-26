@@ -1,55 +1,4 @@
-.lab {
-  --lab-highlight: rgb(110 166 186 / 0.16);
-  --lab-bar: rgb(169 195 207 / 0.72);
-  --lab-track: rgb(169 195 207 / 0.08);
-  position: relative;
-  padding-block: var(--space-section);
-}
-
-/* Borde superior con marcas de escala: el laboratorio se lee como un instrumento, distinto del resto de secciones. */
-.lab::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  right: 0;
-  left: 0;
-  height: 0.75rem;
-  background: repeating-linear-gradient(to right, var(--rule-strong) 0 1px, transparent 1px 0.75rem) top / 100% 0.4rem
-    no-repeat;
-  opacity: 0.6;
-}
-
-.lab code,
-.lab pre {
-  font-family: var(--font-mono);
-  font-size: 0.875em;
-}
-
-.lab-title-tail {
-  color: var(--accent-strong);
-}
-
-.lab-intro {
-  display: grid;
-  gap: 1.25rem;
-}
-
-.lab-traits {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-}
-
-.lab-traits li {
-  padding: 0.3rem 0.6rem;
-  font-family: var(--font-mono);
-  font-size: var(--text-2xs);
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--accent-strong);
-  border: 1px solid var(--rule-strong);
-  border-radius: 999px;
-}
+/* El contenedor, la cabecera y las variables --lab-* están en LabSection.css, que se carga siempre. */
 
 .lab-kicker,
 .lab-ledger dt,
@@ -74,7 +23,6 @@
 .lab-source {
   display: grid;
   gap: 1rem;
-  margin-top: var(--space-block);
 }
 
 .lab-source-main {
@@ -853,19 +801,6 @@
 }
 
 @media (min-width: 64rem) {
-  .lab-header .section-title {
-    grid-column: 1 / span 7;
-  }
-
-  .lab-intro {
-    grid-column: 8 / -1;
-    padding-bottom: 0.5rem;
-  }
-
-  .lab-intro .section-intro {
-    padding-bottom: 0;
-  }
-
   .lab-source,
   .lab-grid {
     grid-template-columns: repeat(12, minmax(0, 1fr));

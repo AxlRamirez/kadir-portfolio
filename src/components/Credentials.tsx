@@ -20,7 +20,7 @@ function CredentialEntry({ credential, onOpen }: CredentialEntryProps) {
   const { document, verification } = credential
 
   return (
-    <li className="credential" data-reveal="">
+    <li id={`credencial-${credential.id}`} className="credential" data-reveal="">
       <p className="credential-kind">{credential.kind}</p>
       <h4 className="credential-title">
         {credential.title}
@@ -120,8 +120,7 @@ function Credentials() {
             Certificaciones <span className="credentials-title-tail">y formación</span>
           </h2>
           <p className="section-intro">
-            Formación técnica, certificaciones y una constancia de experiencia profesional. Puedes ampliar cada
-            documento para leerlo completo.
+            Formación técnica y certificaciones. Puedes ampliar cada documento para leerlo completo.
           </p>
         </header>
 

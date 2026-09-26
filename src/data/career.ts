@@ -1,6 +1,6 @@
 export type CareerStep = {
   id: string
-  /** Etiqueta de tiempo tal como se muestra. Solo lleva fechas que figuran en un documento de la sección de formación. */
+  /** Etiqueta de tiempo tal como se muestra. Solo lleva fechas documentadas; las de formación coinciden con sus certificados. */
   when: string
   stage: string
   title: string
@@ -21,23 +21,13 @@ export const careerSteps: CareerStep[] = [
     link: { href: '#formacion', label: 'Ver el certificado' },
   },
   {
-    id: 'pasantia',
-    when: 'abr – jul 2024',
-    stage: 'Pasantía',
-    title: 'Proyectos de front-end y UX/UI',
-    place: 'Moovin, a través de Bizquick',
-    description:
-      'Empecé en Moovin con una pasantía gestionada por la plataforma Bizquick, trabajando en proyectos de front-end y UX/UI.',
-    link: { href: '#formacion-experiencia', label: 'Ver la constancia' },
-  },
-  {
     id: 'moovin',
-    when: 'Después de la pasantía · cerca de dos años',
-    stage: 'Contratación directa',
-    title: 'Desarrollador',
-    place: 'Moovin',
+    when: 'jul 2023 – jul 2025',
+    stage: 'Experiencia laboral',
+    title: 'Software Developer',
+    place: 'Moovin Logistics · jornada completa, en remoto',
     description:
-      'Al terminar la pasantía, Moovin me contrató directamente. Desarrollé módulos operativos y participé en varios proyectos del equipo técnico.',
+      'Desarrollo de interfaz web para el sistema logístico de la empresa usando React, JavaScript, HTML y CSS.',
   },
   {
     id: 'insightcenter',

@@ -1,0 +1,332 @@
+.lab {
+  --lab-highlight: rgb(110 166 186 / 0.16);
+  --lab-bar: rgb(169 195 207 / 0.72);
+  --lab-track: rgb(169 195 207 / 0.08);
+  position: relative;
+  padding-block: clamp(2.5rem, 5.5vw, 4.25rem);
+}
+
+/* Borde superior con marcas de escala: el laboratorio se lee como un instrumento, distinto del resto de secciones. */
+.lab::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  height: 0.75rem;
+  background: repeating-linear-gradient(to right, var(--rule-strong) 0 1px, transparent 1px 0.75rem) top / 100% 0.4rem
+    no-repeat;
+  opacity: 0.6;
+}
+
+.lab code,
+.lab pre {
+  font-family: var(--font-mono);
+  font-size: 0.875em;
+}
+
+/* Cerrada, la sección es una invitación a probar la herramienta: título en una línea y bloque compacto. */
+
+.lab-lead {
+  display: grid;
+  gap: 1.75rem;
+}
+
+.lab-lead-text {
+  display: grid;
+  gap: 1.5rem;
+  align-content: start;
+}
+
+.lab-header {
+  display: grid;
+  gap: 1rem;
+}
+
+.lab-title {
+  font-size: clamp(2.25rem, 4.4vw, 3.5rem);
+  line-height: 1;
+}
+
+.lab-title-tail {
+  color: var(--accent-strong);
+}
+
+.lab-traits {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.lab-traits li {
+  padding: 0.3rem 0.6rem;
+  font-family: var(--font-mono);
+  font-size: var(--text-2xs);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--accent-strong);
+  border: 1px solid var(--rule-strong);
+  border-radius: 999px;
+}
+
+.lab-teaser-action {
+  display: grid;
+  justify-items: start;
+  gap: 0.6rem;
+}
+
+.lab-toggle-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.85rem;
+  min-height: 3rem;
+  padding: 0.75rem 1.15rem 0.75rem 1.35rem;
+  font: inherit;
+  font-size: 1rem;
+  font-weight: 600;
+  line-height: 1.2;
+  color: var(--on-accent);
+  cursor: pointer;
+  background: var(--accent-strong);
+  border: 1px solid var(--accent-strong);
+  border-radius: var(--radius);
+}
+
+.lab-toggle-button:hover {
+  background: var(--white);
+  border-color: var(--white);
+}
+
+.lab-toggle-button[aria-expanded='true'] {
+  color: var(--fg);
+  background: transparent;
+  border-color: var(--rule-strong);
+}
+
+.lab-toggle-button[aria-expanded='true']:hover {
+  background: rgb(169 195 207 / 0.08);
+  border-color: var(--fg);
+}
+
+/* Las líneas del icono son bordes, no fondos, para que sigan visibles en modo de alto contraste. */
+.lab-toggle-icon {
+  position: relative;
+  flex: none;
+  width: 0.8rem;
+  height: 0.8rem;
+}
+
+.lab-toggle-icon::before,
+.lab-toggle-icon::after {
+  content: '';
+  position: absolute;
+  top: calc(50% - 1px);
+  left: 0;
+  width: 100%;
+  border-top: 2px solid currentColor;
+}
+
+.lab-toggle-icon::after {
+  transform: rotate(90deg);
+}
+
+.lab-toggle-button[aria-expanded='true'] .lab-toggle-icon::after {
+  transform: rotate(0deg);
+}
+
+.lab-teaser-note {
+  max-width: 30rem;
+  font-size: var(--text-sm);
+  color: var(--fg-muted);
+}
+
+/* Muestra estática del ejemplo: datos de entrada y un resultado, para anticipar qué hace la herramienta. */
+
+.lab-preview {
+  display: grid;
+  margin: 0;
+  overflow: hidden;
+  background: var(--surface-sunken);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+}
+
+.lab-preview-file,
+.lab-preview-result {
+  min-width: 0;
+  padding: 0.85rem 1rem 0.95rem;
+}
+
+.lab-preview-result {
+  border-top: 1px solid var(--rule);
+}
+
+.lab-preview-label {
+  font-family: var(--font-mono);
+  font-size: var(--text-2xs);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+.lab-preview-csv {
+  margin: 0.5rem 0 0;
+  overflow: hidden;
+  line-height: 1.6;
+  text-overflow: ellipsis;
+  color: var(--fg-muted);
+}
+
+.lab-preview-bars {
+  display: grid;
+  grid-template-columns: max-content minmax(3rem, 1fr) max-content;
+  row-gap: 0.4rem;
+  column-gap: 0.75rem;
+  margin-top: 0.6rem;
+}
+
+.lab-preview-bars li {
+  display: grid;
+  grid-column: 1 / -1;
+  grid-template-columns: subgrid;
+  align-items: center;
+  font-size: var(--text-sm);
+}
+
+.lab-preview-track {
+  position: relative;
+  height: 0.5rem;
+  overflow: hidden;
+  background: var(--lab-track);
+}
+
+.lab-preview-fill {
+  position: absolute;
+  inset: 0;
+  background: var(--lab-bar);
+  transform: scaleX(var(--ratio));
+  transform-origin: left;
+}
+
+.lab-preview-share {
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+  color: var(--fg-muted);
+}
+
+/* Panel con el analizador */
+
+.lab-panel {
+  margin-top: clamp(2rem, 4vw, 3rem);
+}
+
+.lab-panel:focus:not(:focus-visible) {
+  outline: none;
+}
+
+.lab-panel:focus-visible {
+  outline-offset: 0.75rem;
+}
+
+.lab-panel-message {
+  padding-block: 1.5rem;
+  color: var(--fg-muted);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .lab-toggle-button {
+    transition:
+      background-color var(--duration-fast) ease,
+      border-color var(--duration-fast) ease,
+      color var(--duration-fast) ease,
+      transform var(--duration-fast) ease;
+  }
+
+  .lab-toggle-button:active {
+    transform: scale(0.98);
+  }
+
+  .lab-toggle-icon::after {
+    transition: transform var(--duration-base) var(--ease-out);
+  }
+
+  .lab-panel:not([hidden]),
+  .lab-preview {
+    animation: lab-appear var(--duration-slow) var(--ease-out) backwards;
+  }
+}
+
+@keyframes lab-appear {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 1rem, 0);
+  }
+}
+
+/* En móvil la invitación se resume: las características van en una línea y la muestra enseña solo el resultado. */
+@media (max-width: 29.99rem) {
+  .lab-lead {
+    gap: 1.5rem;
+  }
+
+  .lab-intro {
+    font-size: var(--text-md);
+  }
+
+  .lab-traits {
+    gap: 0.25rem 0.5rem;
+  }
+
+  .lab-traits li {
+    padding: 0;
+    border: 0;
+  }
+
+  .lab-traits li:not(:last-child)::after {
+    content: '·';
+    margin-left: 0.5rem;
+    color: var(--fg-muted);
+  }
+
+  .lab-preview-file {
+    display: none;
+  }
+
+  .lab-preview-result {
+    border-top: 0;
+  }
+}
+
+@media (min-width: 48rem) {
+  .lab-preview {
+    grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
+  }
+
+  .lab-preview-result {
+    border-top: 0;
+    border-left: 1px solid var(--rule);
+  }
+}
+
+@media (min-width: 64rem) {
+  .lab-lead {
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    column-gap: var(--grid-gap);
+  }
+
+  .lab-lead-text {
+    grid-column: 1 / span 6;
+  }
+
+  /* En la columna estrecha los dos paneles de la muestra se apilan. */
+  .lab-preview {
+    grid-template-columns: minmax(0, 1fr);
+    grid-column: 8 / -1;
+    align-self: center;
+  }
+
+  .lab-preview-result {
+    border-top: 1px solid var(--rule);
+    border-left: 0;
+  }
+}

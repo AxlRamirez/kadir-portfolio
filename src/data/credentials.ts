@@ -1,4 +1,4 @@
-import bizquickDocument from '../assets/credentials/bizquick.webp'
+import dspcBadge from '../assets/credentials/dspc.webp'
 import elementsOfAiDocument from '../assets/credentials/elements-of-ai.webp'
 import fwdBackEndDocument from '../assets/credentials/fwd-back-end.webp'
 import fwdFullStackDocument from '../assets/credentials/fwd-full-stack.webp'
@@ -145,35 +145,20 @@ export const credentialGroups: CredentialGroup[] = [
         acronym: 'DSPC™',
         kind: 'Certificación profesional',
         issuer: 'CertiProf',
-        summary: 'Credencial digital publicada en Credly. No hay copia del certificado en esta página.',
+        summary: 'Credencial digital publicada en Credly.',
         issued: { label: 'Emitida', date: '2024-09-30' },
         expires: '2027-09-30',
+        document: {
+          src: dspcBadge,
+          width: 515,
+          height: 474,
+          alt: 'Insignia de la Design Sprint Professional Certification de CertiProf: un sello circular con el texto «Professional Certification», el logotipo de CertiProf, la franja «Design Sprint» y la sigla DSPC™.',
+          note: 'Insignia de la credencial digital; el certificado no se publica en esta página.',
+        },
         verification: {
           href: 'https://www.credly.com/badges/d78621bc-fe52-4971-9f0c-d804d8cc79c0/linked_in_profile',
           label: 'Ver la credencial',
           source: 'Credly',
-        },
-      },
-    ],
-  },
-  {
-    id: 'experiencia',
-    title: 'Experiencia profesional',
-    description: 'Constancia de la pasantía con la que empecé en Moovin. No es una certificación académica.',
-    credentials: [
-      {
-        id: 'bizquick-moovin',
-        title: 'Proyectos de front-end y UX/UI',
-        kind: 'Constancia de experiencia profesional',
-        issuer: 'Bizquick',
-        summary:
-          'Constancia de la pasantía con la que empecé en Moovin CR, gestionada por la plataforma Bizquick. Al terminarla, Moovin me contrató directamente.',
-        period: { start: '2024-04-22', end: '2024-07-19' },
-        document: {
-          src: bizquickDocument,
-          width: 881,
-          height: 674,
-          alt: `Certificado de experiencia profesional de Bizquick que indica que ${FULL_NAME} completó la oportunidad «Proyectos de Front-end y UX/UI» con la empresa Moovin CR a través de la plataforma Bizquick, del 22 de abril al 19 de julio de 2024. Firma Maureen Serrano, directora ejecutiva de Bizquick S.A.`,
         },
       },
     ],

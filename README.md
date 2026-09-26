@@ -9,10 +9,10 @@ La página tiene:
 - Navegación con enlaces a las secciones; en escritorio queda fija arriba y marca la sección visible.
 - Portada con presentación, un avance de los proyectos (sus capturas apiladas, enlazadas a la sección), un resumen breve de lo actual y lo anterior, y enlaces de contacto (LinkedIn, WhatsApp y correo, con opción de copiar la dirección).
 - Sección de proyectos con cuatro sitios publicados, cada uno con vista previa y enlace. El primero se presenta destacado, el segundo en dos columnas y los demás en formato compacto.
-- Laboratorio de datos: un analizador de ventas que funciona en el navegador (ver más abajo).
-- Trayectoria: de la formación en FWD a la pasantía en Moovin, la contratación directa y el trabajo actual en InsightCenter.
-- Sección de habilidades agrupadas por función.
-- Sección de certificaciones y formación: programas de FWD Costa Rica, certificaciones con su enlace de verificación cuando existe y una constancia de experiencia profesional. Cada documento se puede ampliar en un visor accesible con el teclado.
+- Laboratorio de datos: un analizador de ventas que funciona en el navegador (ver más abajo). La sección se muestra plegada, con una muestra del ejemplo, y se abre con «Abrir laboratorio».
+- Trayectoria: la formación en FWD, el trabajo como Software Developer en Moovin Logistics (julio de 2023 a julio de 2025) y el desarrollo actual de InsightCenter.
+- Sección de habilidades agrupadas por función, con una nota sobre inteligencia artificial vinculada al certificado de Elements of AI.
+- Sección de certificaciones y formación: programas de FWD Costa Rica y certificaciones con su enlace de verificación cuando existe. Cada documento se puede ampliar en un visor accesible con el teclado.
 - Pie con los enlaces de contacto.
 
 Todavía no incluye CV descargable, páginas de casos ni la demo de IA.
@@ -68,11 +68,12 @@ src/components/Skills.*       Habilidades
 src/components/Credentials.*  Certificaciones y formación
 src/components/CredentialViewer.tsx  Visor ampliado de un documento (diálogo modal)
 src/components/SiteFooter.*   Pie de página
-src/components/lab/           Componentes del laboratorio de datos
+src/components/lab/LabSection.*  Sección del laboratorio: cabecera, muestra y apertura del analizador
+src/components/lab/           Resto de componentes del laboratorio (el analizador se carga al abrirlo)
 src/lab/                      Lógica del laboratorio, sin React: parser CSV, validación, cálculos, observaciones y pruebas
 src/data/projects.ts          Datos de los proyectos (textos, enlaces, vistas previas)
 src/data/skills.ts            Datos de las habilidades y sus grupos
-src/data/credentials.ts       Datos de las certificaciones, la formación y la constancia de experiencia
+src/data/credentials.ts       Datos de las certificaciones y la formación
 src/data/career.ts            Pasos de la trayectoria
 src/data/contact.ts           Correo y enlaces de contacto (portada y pie)
 src/assets/projects/          Vistas previas de los proyectos (WebP)
@@ -86,6 +87,8 @@ scripts/prerender.mjs         Inserta el HTML renderizado en dist/index.html des
 ## Laboratorio de datos
 
 Analiza ventas a partir de un CSV con las columnas `fecha`, `producto`, `cantidad` y `precio_unitario`. Al entrar muestra un ejemplo ficticio (`src/lab/sampleData.ts`), que se puede descargar como muestra y restablecer. También incluye un ejemplo con errores para ver la validación. Los archivos se leen con la API `File` del navegador y no se envían a ningún servidor. Si el navegador no puede leer el archivo (por ejemplo, porque se movió o se eliminó después de elegirlo), se muestra un error y se puede elegir otro. No usa IA: todo sale de cálculos y reglas explícitas.
+
+La sección arranca plegada y el código del analizador (`DataLab.tsx` y sus dependencias) se descarga al abrirla; se adelanta la descarga cuando el puntero o el foco llegan al botón. Una vez abierto, el analizador sigue montado aunque se cierre, así que conserva el archivo, los filtros y los resultados. Los enlaces a `#laboratorio` lo abren y llevan a la sección; los enlaces a `#laboratorio-herramienta` lo abren y llevan el foco al analizador.
 
 Flujo: `encoding.ts` decodifica los bytes como UTF-8, `csv.ts` separa registros y celdas, `validation.ts` convierte cada registro en una venta o en errores, `analysis.ts` calcula los totales e `insights.ts` aplica las reglas de observaciones. `pipeline.ts` une esos pasos.
 
@@ -155,7 +158,7 @@ Las imágenes de `src/assets/projects/` son capturas propias de la página públ
 
 ### Certificados
 
-Las imágenes de `src/assets/credentials/` son copias de los documentos del propietario del portafolio, convertidas a WebP (calidad 0,88) sin cambiar su tamaño en píxeles. La vista previa de «TI Redes y Soporte Técnico» se giró 90° para corregir su orientación, sin recortar. En la copia de la certificación SFPC se ocultó el número de certificado. «Full Stack Developer» es una fotografía del certificado impreso. Los logotipos visibles pertenecen a sus emisores.
+Las imágenes de `src/assets/credentials/` son copias de los documentos del propietario del portafolio, convertidas a WebP (calidad 0,88) sin cambiar su tamaño en píxeles. La vista previa de «TI Redes y Soporte Técnico» se giró 90° para corregir su orientación, sin recortar. En la copia de la certificación SFPC se ocultó el número de certificado. La imagen de la DSPC es la insignia de su credencial digital, no el certificado. «Full Stack Developer» es una fotografía del certificado impreso. Los logotipos visibles pertenecen a sus emisores.
 
 ### Tipografía
 

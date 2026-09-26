@@ -1,4 +1,4 @@
-import { useRef, useState, type ChangeEvent } from 'react'
+import { useEffect, useRef, useState, type ChangeEvent } from 'react'
 import { readFileBytes } from '../../lab/fileReading.ts'
 import { fileIssue, MAX_FILE_BYTES, readSalesCsv, readSalesFile } from '../../lab/pipeline.ts'
 import { INVALID_SAMPLE_CSV, SAMPLE_CSV, SAMPLE_FILE_NAME } from '../../lab/sampleData.ts'
@@ -28,7 +28,17 @@ function describeResult(source: DataSource, result: ValidationResult): string {
   return `${origin} tiene ${result.issues.length} ${result.issues.length === 1 ? 'problema' : 'problemas'}. No se calculó el análisis.`
 }
 
-function DataLab() {
+type DataLabProps = {
+  /** Se llama cuando el analizador ya está en la página, para poder situarlo. */
+  onReady?: () => void
+}
+
+/** El analizador completo. Se carga bajo demanda desde LabSection, que aporta la cabecera de la sección. */
+function DataLab({ onReady }: DataLabProps) {
+  useEffect(() => {
+    onReady?.()
+  }, [onReady])
+
   const [data, setData] = useState<LabData>(() => ({
     source: { kind: 'sample' },
     result: readSalesCsv(SAMPLE_CSV),
@@ -69,89 +79,67 @@ function DataLab() {
   const { source, result, version } = data
 
   return (
-    <section id="laboratorio" className="lab theme-dark" aria-labelledby="lab-title">
-      <div className="container">
-        <header className="section-header lab-header" data-reveal="">
-          <p className="section-index" aria-hidden="true">
-            <span className="section-index-number">02</span> Herramienta en el navegador
-          </p>
-          <h2 id="lab-title" className="section-title">
-            Laboratorio <span className="lab-title-tail">de datos</span>
-          </h2>
-          <div className="lab-intro">
-            <p className="section-intro">
-              Una herramienta pequeña para analizar ventas. Valida el archivo, calcula con reglas explícitas y explica
-              cada resultado. Los archivos se procesan en tu navegador; no se envían a ningún servidor.
+    <div className="lab-tool">
+      <div className="lab-source" aria-labelledby="lab-source-title" role="group">
+        <div className="lab-source-main">
+          <h3 id="lab-source-title" className="lab-kicker">
+            Datos en uso
+          </h3>
+          {source.kind === 'sample' && (
+            <p className="lab-source-name">
+              <span className="lab-badge">Ejemplo ficticio</span> Ventas inventadas de una tienda imaginaria, para
+              mostrar el análisis.
             </p>
-            <ul className="lab-traits" role="list" aria-label="Características">
-              <li>Todo o nada</li>
-              <li>Reglas explícitas</li>
-              <li>Sin servidor</li>
-            </ul>
+          )}
+          {source.kind === 'invalid-sample' && (
+            <p className="lab-source-name">
+              <span className="lab-badge">Ejemplo con errores</span> Un archivo preparado con fallos frecuentes, para
+              ver cómo se reportan.
+            </p>
+          )}
+          {source.kind === 'file' && (
+            <p className="lab-source-name">
+              <span className="lab-badge">Tu archivo</span> <span className="lab-file-name">{source.name}</span>,
+              sin salir de este navegador.
+            </p>
+          )}
+
+          <div className="lab-actions">
+            <input
+              id="lab-file"
+              className="visually-hidden"
+              type="file"
+              accept=".csv,text/csv"
+              onChange={handleFile}
+            />
+            <label htmlFor="lab-file" className="lab-button lab-button-primary">
+              Cargar un CSV
+            </label>
+            <a className="lab-button" href={SAMPLE_DOWNLOAD_HREF} download={SAMPLE_FILE_NAME}>
+              Descargar la muestra
+            </a>
+            <button type="button" className="lab-button" onClick={resetToSample}>
+              Restablecer el ejemplo
+            </button>
+            <button type="button" className="lab-button lab-button-quiet" onClick={loadInvalidSample}>
+              Probar un archivo con errores
+            </button>
           </div>
-        </header>
-
-        <div className="lab-source" aria-labelledby="lab-source-title" role="group" data-reveal="">
-          <div className="lab-source-main">
-            <h3 id="lab-source-title" className="lab-kicker">
-              Datos en uso
-            </h3>
-            {source.kind === 'sample' && (
-              <p className="lab-source-name">
-                <span className="lab-badge">Ejemplo ficticio</span> Ventas inventadas de una tienda imaginaria, para
-                mostrar el análisis.
-              </p>
-            )}
-            {source.kind === 'invalid-sample' && (
-              <p className="lab-source-name">
-                <span className="lab-badge">Ejemplo con errores</span> Un archivo preparado con fallos frecuentes, para
-                ver cómo se reportan.
-              </p>
-            )}
-            {source.kind === 'file' && (
-              <p className="lab-source-name">
-                <span className="lab-badge">Tu archivo</span> <span className="lab-file-name">{source.name}</span>,
-                sin salir de este navegador.
-              </p>
-            )}
-
-            <div className="lab-actions">
-              <input
-                id="lab-file"
-                className="visually-hidden"
-                type="file"
-                accept=".csv,text/csv"
-                onChange={handleFile}
-              />
-              <label htmlFor="lab-file" className="lab-button lab-button-primary">
-                Cargar un CSV
-              </label>
-              <a className="lab-button" href={SAMPLE_DOWNLOAD_HREF} download={SAMPLE_FILE_NAME}>
-                Descargar la muestra
-              </a>
-              <button type="button" className="lab-button" onClick={resetToSample}>
-                Restablecer el ejemplo
-              </button>
-              <button type="button" className="lab-button lab-button-quiet" onClick={loadInvalidSample}>
-                Probar un archivo con errores
-              </button>
-            </div>
-          </div>
-
-          <FormatGuide />
         </div>
 
-        <p className="visually-hidden" role="status">
-          {announcement}
-        </p>
-
-        {result.ok ? (
-          <LabResults key={version} records={result.records} skippedEmptyLines={result.skippedEmptyLines} ignoredColumns={result.ignoredColumns} />
-        ) : (
-          <ValidationReport issues={result.issues} skippedEmptyLines={result.skippedEmptyLines} onReset={resetToSample} />
-        )}
+        <FormatGuide />
       </div>
-    </section>
+
+      <p className="visually-hidden" role="status">
+        {announcement}
+      </p>
+
+      {result.ok ? (
+        <LabResults key={version} records={result.records} skippedEmptyLines={result.skippedEmptyLines} ignoredColumns={result.ignoredColumns} />
+      ) : (
+        <ValidationReport issues={result.issues} skippedEmptyLines={result.skippedEmptyLines} onReset={resetToSample} />
+      )}
+    </div>
   )
 }
 

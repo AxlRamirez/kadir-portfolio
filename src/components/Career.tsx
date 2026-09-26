@@ -13,9 +13,8 @@ function Career() {
             Trayectoria
           </h2>
           <p className="section-intro">
-            Me formé en FWD Costa Rica y empecé en Moovin con una pasantía; al terminarla, la empresa me contrató
-            directamente. También tengo experiencia en procesos administrativos y soporte TI. Las fechas son las de los
-            documentos de la sección de formación.
+            Me formé en FWD Costa Rica y trabajé dos años como Software Developer en Moovin Logistics. También tengo
+            experiencia en procesos administrativos y soporte TI. Las fechas de formación son las de los certificados.
           </p>
         </header>
 

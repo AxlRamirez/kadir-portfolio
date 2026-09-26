@@ -74,7 +74,7 @@ export const projects: Project[] = [
       'Formulario para registrar dispensaciones de combustible con placa, cliente, lectura de odómetro, litros e imágenes de evidencia, y mostrar el resultado de consumo. Tiene un acceso aparte al panel administrativo.',
     context: 'Publicada en Firebase Hosting',
     url: 'https://control-de-diesel.web.app/',
-    note: 'El enlace lleva a una herramienta operativa en uso. Puedes ver el formulario, pero no envíes registros de prueba.',
+    //note: 'El enlace lleva a una herramienta operativa en uso. Puedes ver el formulario, pero no envíes registros de prueba.',
     preview: {
       src: controlDieselPreview,
       srcSet: previewSrcSet(controlDiesel640, controlDiesel960, controlDieselPreview),
