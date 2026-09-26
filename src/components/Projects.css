@@ -1,0 +1,258 @@
+.projects {
+  /* El proyecto destacado sangra hasta el borde de la ventana; 100cqw mide la sección sin la barra de scroll. */
+  container-type: inline-size;
+  --bleed: calc((100cqw - min(100cqw - 2 * var(--page-gutter), var(--page-width))) / 2);
+  padding-block: var(--space-section);
+  overflow-x: clip;
+}
+
+.project-list {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: calc(var(--space-block) * 1.5);
+  margin-top: var(--space-block);
+}
+
+.project {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 1.5rem;
+}
+
+.project-preview {
+  order: -1;
+  position: relative;
+}
+
+.project-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.35rem 1rem;
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--fg-muted);
+}
+
+.project-number {
+  font-weight: 600;
+  color: var(--accent);
+}
+
+.project-total {
+  font-weight: 400;
+  color: var(--fg-muted);
+}
+
+.project-name {
+  margin-top: 0.75rem;
+  font-family: var(--font-display);
+  font-size: var(--display-4);
+  font-weight: 400;
+  line-height: 1.02;
+  letter-spacing: -0.02em;
+  text-wrap: balance;
+}
+
+.project-host {
+  margin-top: 0.5rem;
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  color: var(--fg-muted);
+  overflow-wrap: anywhere;
+}
+
+.project-description {
+  max-width: 36rem;
+  margin-top: 1rem;
+  font-size: 1.0625rem;
+  text-wrap: pretty;
+}
+
+.project-context {
+  margin-top: 0.75rem;
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  line-height: 1.6;
+  color: var(--fg-muted);
+}
+
+.project-note {
+  max-width: 36rem;
+  margin-top: 1rem;
+  padding: 0.7rem 0.95rem;
+  font-size: var(--text-sm);
+  background: var(--surface-sunken);
+  border-left: 2px solid var(--accent);
+}
+
+.project-note-label {
+  font-weight: 600;
+}
+
+.project-link {
+  margin-top: 1.25rem;
+}
+
+.project-preview img {
+  width: 100%;
+  height: auto;
+  background: var(--white);
+}
+
+.project-preview-pending {
+  display: grid;
+  place-items: center;
+  aspect-ratio: 16 / 10;
+  font-size: 0.9375rem;
+  color: var(--fg-muted);
+  background: var(--surface-sunken);
+}
+
+/* Destacado: la captura dentro de un marco de navegador con la dirección real del sitio. */
+.project-feature .project-name {
+  font-size: var(--display-3);
+}
+
+.project-feature .project-preview {
+  margin-inline: calc(-1 * var(--page-gutter));
+  overflow: hidden;
+  background: var(--graphite);
+  box-shadow: 0 30px 60px -40px rgb(30 32 38 / 0.55);
+}
+
+.project-frame-bar {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  height: 2.25rem;
+  padding-inline: 1rem;
+  font-family: var(--font-mono);
+  font-size: var(--text-2xs);
+  color: var(--text-on-dark-muted);
+}
+
+.project-frame-dots {
+  flex: none;
+  width: 2.25rem;
+  height: 0.5rem;
+  background:
+    radial-gradient(circle, var(--gray) 0.25rem, transparent 0.27rem) 0 0 / 0.75rem 0.5rem repeat-x;
+}
+
+.project-frame-host {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Alterno: un bloque de color desplazado detrás de la captura rompe la alineación de la columna. */
+.project-split .project-preview {
+  isolation: isolate;
+  margin-right: 1rem;
+}
+
+.project-split .project-preview::before {
+  content: '';
+  position: absolute;
+  inset: 1rem -1rem -1rem 1rem;
+  z-index: -1;
+  background: var(--blue-light);
+  opacity: 0.55;
+}
+
+.project-split .project-preview img,
+.project-compact .project-preview img {
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+}
+
+/* Pares: dos columnas con una regla común arriba. */
+.project-compact {
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--rule-strong);
+}
+
+.project-compact .project-name {
+  font-size: clamp(1.625rem, 2.6vw, 2.125rem);
+}
+
+.project-compact .project-description {
+  font-size: 1rem;
+}
+
+@media (hover: hover) and (prefers-reduced-motion: no-preference) {
+  .project-preview {
+    transition: transform 600ms var(--ease-out);
+  }
+
+  .project:hover .project-preview,
+  .project:focus-within .project-preview {
+    transform: translateY(-0.4rem);
+  }
+}
+
+@media (min-width: 48rem) {
+  .project-list {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    column-gap: var(--grid-gap);
+  }
+
+  .project-feature,
+  .project-split {
+    grid-column: 1 / -1;
+  }
+
+  .project-compact {
+    align-content: start;
+  }
+
+  .project-compact + .project-compact {
+    padding-left: var(--grid-gap);
+    border-left: 1px solid var(--rule);
+  }
+
+  .project-feature .project-preview {
+    margin-inline: 0;
+    border-radius: var(--radius);
+  }
+}
+
+@media (min-width: 64rem) {
+  .project-feature,
+  .project-split {
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    column-gap: var(--grid-gap);
+    align-items: center;
+  }
+
+  .project-feature .project-body {
+    grid-column: 1 / span 4;
+    grid-row: 1;
+  }
+
+  .project-feature .project-preview {
+    grid-column: 5 / -1;
+    grid-row: 1;
+    margin-right: calc(-1 * var(--bleed));
+    border-radius: var(--radius) 0 0 var(--radius);
+  }
+
+  .project-split .project-preview {
+    grid-column: 1 / span 7;
+    grid-row: 1;
+    margin-right: 0;
+  }
+
+  .project-split .project-preview::before {
+    inset: 2rem -2rem -2rem 2rem;
+  }
+
+  .project-split .project-body {
+    grid-column: 9 / -1;
+    grid-row: 1;
+    align-self: end;
+  }
+}
