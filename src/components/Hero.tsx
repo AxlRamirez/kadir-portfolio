@@ -1,4 +1,4 @@
-import { useEffect, useState, type CSSProperties } from 'react'
+import { useEffect, useState, useSyncExternalStore, type CSSProperties } from 'react'
 import { EMAIL, externalContacts } from '../data/contact.ts'
 import { PREVIEW_HEIGHT, PREVIEW_WIDTH, projects } from '../data/projects.ts'
 import './Hero.css'
@@ -48,6 +48,23 @@ function CopyEmailButton({ email }: { email: string }) {
   )
 }
 
+const FINE_POINTER_QUERY = '(hover: hover) and (pointer: fine)'
+
+function subscribeToPointer(onChange: () => void) {
+  const query = window.matchMedia(FINE_POINTER_QUERY)
+  query.addEventListener('change', onChange)
+  return () => query.removeEventListener('change', onChange)
+}
+
+/** El HTML prerenderizado usa el enlace móvil; en el navegador se cambia si el puntero principal es un ratón. */
+function useFinePointer() {
+  return useSyncExternalStore(
+    subscribeToPointer,
+    () => window.matchMedia(FINE_POINTER_QUERY).matches,
+    () => false,
+  )
+}
+
 // La composición del mazo (Hero.css) está pensada para cuatro cartas.
 const deckProjects = projects.filter((project) => project.preview).slice(0, 4)
 const projectCount = String(projects.length).padStart(2, '0')
@@ -88,6 +105,8 @@ function WorkDeck() {
 }
 
 function Hero() {
+  const finePointer = useFinePointer()
+
   return (
     <section className="hero theme-dark" aria-labelledby="hero-title">
       <div className="container hero-grid">
@@ -140,7 +159,12 @@ function Hero() {
           <ul className="contact-list" role="list">
             {externalContacts.map((contact) => (
               <li key={contact.label}>
-                <a className="contact-link" href={contact.href} target="_blank" rel="noreferrer">
+                <a
+                  className="contact-link"
+                  href={(finePointer && contact.desktopHref) || contact.href}
+                  target="_blank"
+                  rel="noreferrer"
+                >
                   <span className="contact-label">{contact.label}</span>
                   <span className="contact-value">{contact.value}</span>
                   <span className="contact-arrow arrow" aria-hidden="true">
