@@ -1,0 +1,165 @@
+.site-header {
+  position: relative;
+  z-index: 20;
+}
+
+.site-header-inner {
+  display: grid;
+  gap: 0.5rem;
+  padding-block: 1rem 0.5rem;
+  font-size: 0.9375rem;
+  border-bottom: 1px solid var(--rule);
+}
+
+.brand {
+  display: inline-flex;
+  align-items: center;
+  justify-self: start;
+  gap: 0.75rem;
+  min-height: 2.75rem;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.brand-mark {
+  display: inline-grid;
+  place-items: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: var(--on-accent);
+  background: var(--accent-strong);
+  border-radius: var(--radius);
+}
+
+/* En móvil los seis enlaces forman una rejilla de 3 × 2 bajo la marca: todos quedan visibles sin menú. */
+.site-nav {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  column-gap: 1rem;
+}
+
+.site-nav a {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  min-height: 2.75rem;
+  color: var(--fg-muted);
+  text-decoration: none;
+}
+
+.site-nav a::after {
+  content: '';
+  position: absolute;
+  right: 0;
+  bottom: 0.5rem;
+  left: 0;
+  height: 2px;
+  background: var(--fg-muted);
+  transform: scaleX(0);
+  transform-origin: left;
+}
+
+.site-nav a:hover {
+  color: var(--fg);
+}
+
+.site-nav a:hover::after {
+  transform: scaleX(1);
+}
+
+.site-nav a[aria-current='true'] {
+  color: var(--fg);
+}
+
+.site-nav a[aria-current='true']::after {
+  background: var(--accent);
+  transform: scaleX(1);
+}
+
+.scroll-progress {
+  display: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .site-nav a,
+  .site-nav a::after {
+    transition:
+      color var(--duration-fast) ease,
+      background-color var(--duration-fast) ease,
+      transform var(--duration-base) var(--ease-out);
+  }
+}
+
+@media (min-width: 48rem) {
+  .site-header-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.5rem;
+    padding-block: 0.9rem;
+  }
+
+  .site-nav {
+    display: flex;
+    gap: clamp(1rem, 2vw, 1.75rem);
+  }
+}
+
+/* Entre 48 y 64 rem el nombre no cabe junto a los seis enlaces: queda solo la marca, con el nombre como texto accesible. */
+@media (min-width: 48rem) and (max-width: 63.99rem) {
+  .brand-name {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+}
+
+@media (min-width: 64rem) {
+  :root {
+    --header-height: 4.25rem;
+  }
+
+  .site-header {
+    position: sticky;
+    top: 0;
+  }
+
+  .site-header-inner {
+    min-height: var(--header-height);
+    padding-block: 0;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    @supports (animation-timeline: scroll()) {
+      .scroll-progress {
+        position: absolute;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        display: block;
+        height: 2px;
+        background: var(--accent);
+        transform-origin: left;
+        animation: scroll-progress linear both;
+        animation-timeline: scroll(root);
+      }
+    }
+  }
+}
+
+@keyframes scroll-progress {
+  from {
+    transform: scaleX(0);
+  }
+
+  to {
+    transform: scaleX(1);
+  }
+}

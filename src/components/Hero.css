@@ -1,0 +1,537 @@
+.hero {
+  position: relative;
+  isolation: isolate;
+  padding-block: clamp(2.5rem, 7vw, 5rem) clamp(3rem, 7vw, 5rem);
+  overflow: hidden;
+}
+
+/* Retícula de puntos, como la de un lienzo de diseño; se desvanece hacia el texto para no competir con él. */
+.hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background-image: radial-gradient(circle at 1px 1px, rgb(169 195 207 / 0.2) 1px, transparent 0);
+  background-size: 1.5rem 1.5rem;
+  mask-image: radial-gradient(ellipse 65% 75% at 88% 18%, #000 15%, transparent 70%);
+}
+
+.hero-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 1.75rem;
+}
+
+/* El nombre firma la portada en una línea; la frase principal es la que lleva el mayor peso de lectura. */
+.hero-title {
+  font-family: var(--font-display);
+  font-size: clamp(2.75rem, 7.5vw, 5.75rem);
+  font-weight: 300;
+  line-height: 0.95;
+  letter-spacing: -0.035em;
+}
+
+.hero-title-line {
+  display: inline-block;
+}
+
+.hero-title-line + .hero-title-line {
+  color: var(--accent-strong);
+}
+
+.hero-lead {
+  max-width: 28ch;
+  font-family: var(--font-display);
+  font-size: clamp(1.75rem, 3.6vw, 3rem);
+  font-weight: 400;
+  line-height: 1.12;
+  letter-spacing: -0.015em;
+  text-wrap: balance;
+}
+
+.hero-lead-key {
+  background: linear-gradient(transparent 86%, rgb(110 166 186 / 0.55) 86% 94%, transparent 94%);
+}
+
+.hero-sub {
+  max-width: 40ch;
+  margin-top: -0.75rem;
+  font-size: var(--text-lg);
+  line-height: 1.55;
+  color: var(--fg-muted);
+}
+
+.hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem 1.75rem;
+}
+
+.hero-cta {
+  min-height: 3.25rem;
+  padding-inline: 1.5rem;
+  font-size: 1rem;
+}
+
+.hero .hero-cta:hover > .arrow {
+  transform: translateY(0.2rem);
+}
+
+/* Mazo de proyectos, en unidades del contenedor para que conserve su forma a cualquier ancho. Los pasos no
+   son iguales: la segunda carta se separa lo bastante para verse casi entera y las dos últimas quedan como
+   pestañas, de modo que se leen dos proyectos sin pasar el ratón y el resto por su dominio. */
+.work-deck {
+  --card-w: 62cqw;
+  --bar-h: 1.75rem;
+  --spread: 1.25cqw;
+
+  container-type: inline-size;
+  display: block;
+  max-width: 30rem;
+  color: inherit;
+  text-decoration: none;
+}
+
+.work-card:nth-child(1) {
+  --x: 0cqw;
+  --y: 0rem;
+}
+
+.work-card:nth-child(2) {
+  --x: 24cqw;
+  --y: 19cqw;
+}
+
+.work-card:nth-child(3) {
+  --x: 31cqw;
+  --y: calc(19cqw + var(--bar-h));
+}
+
+.work-card:nth-child(4) {
+  --x: 38cqw;
+  --y: calc(19cqw + 2 * var(--bar-h));
+}
+
+.work-deck-cards {
+  position: relative;
+  display: block;
+  /* Posición de la última carta + su alto (captura 16:9 y barra) + margen para abrirse al pasar el ratón. */
+  height: calc(19cqw + 2 * var(--bar-h) + var(--card-w) * 0.5625 + var(--bar-h) + 3 * var(--spread));
+}
+
+.work-card {
+  position: absolute;
+  bottom: var(--y);
+  left: var(--x);
+  z-index: calc(10 - var(--i));
+  display: block;
+  width: var(--card-w);
+  overflow: hidden;
+  background: var(--graphite-deep);
+  border: 1px solid var(--rule-strong);
+  border-radius: var(--radius);
+  box-shadow: 0 18px 36px -18px rgb(0 0 0 / 0.6);
+}
+
+/* Las cartas del fondo se oscurecen para dar profundidad; la segunda apenas, para que siga leyéndose. */
+.work-card::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--graphite-deep);
+  opacity: calc(var(--i) * var(--i) * 0.05);
+  pointer-events: none;
+}
+
+.work-card-bar {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  height: var(--bar-h);
+  padding-inline: 0.7rem;
+  font-family: var(--font-mono);
+  font-size: var(--text-2xs);
+  color: var(--text-on-dark-muted);
+}
+
+.work-card-dots {
+  flex: none;
+  width: 1.75rem;
+  height: 0.4rem;
+  background: radial-gradient(circle, var(--gray) 0.2rem, transparent 0.22rem) 0 0 / 0.6rem 0.4rem repeat-x;
+}
+
+.work-card-host {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Recorte 16:9 desde arriba: la cabecera y el titular de cada sitio son lo que lo identifica. */
+.work-card img {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+  object-position: top;
+  background: var(--white);
+}
+
+.work-deck-caption {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+  margin-top: 1rem;
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--fg-muted);
+}
+
+.work-deck-count {
+  color: var(--accent-strong);
+}
+
+.hero-facts {
+  display: grid;
+  gap: 0.5rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--rule);
+}
+
+.hero-fact {
+  display: grid;
+  grid-template-columns: 4.25rem minmax(0, 1fr);
+  gap: 0.75rem;
+}
+
+.hero-fact dt {
+  padding-top: 0.2rem;
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+.hero-fact dd {
+  font-size: 0.9375rem;
+  line-height: 1.5;
+  color: var(--fg-muted);
+}
+
+.hero-fact strong {
+  color: var(--fg);
+}
+
+.hero-contact-title {
+  margin-bottom: 0.75rem;
+  color: var(--fg-muted);
+}
+
+/* flex-wrap deja que el botón de copiar baje de línea antes de que el correo tenga que partirse. */
+.contact-list li {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  column-gap: 1rem;
+  border-top: 1px solid var(--rule);
+}
+
+.contact-list li:last-child {
+  border-bottom: 1px solid var(--rule);
+}
+
+.contact-link {
+  flex: 1;
+  min-width: fit-content;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  column-gap: 1rem;
+  align-items: center;
+  padding-block: 0.8rem;
+  text-decoration: none;
+}
+
+.contact-label {
+  font-family: var(--font-mono);
+  font-size: var(--text-2xs);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--fg-muted);
+}
+
+.contact-value {
+  grid-column: 1;
+  font-size: 1.0625rem;
+  overflow-wrap: break-word;
+  text-decoration: underline 1px transparent;
+  text-underline-offset: 0.25em;
+}
+
+.contact-arrow {
+  grid-column: 2;
+  grid-row: 1 / span 2;
+  color: var(--fg-muted);
+}
+
+.contact-link:hover .contact-value {
+  text-decoration-color: var(--accent);
+}
+
+.contact-link:hover .contact-arrow {
+  color: var(--accent);
+}
+
+.copy-button {
+  flex: none;
+  min-width: 5.5rem;
+  min-height: 2.5rem;
+  margin-block: 0.5rem;
+  padding: 0.5rem 0.9rem;
+  font: inherit;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--fg);
+  background: transparent;
+  border: 1px solid var(--rule-strong);
+  border-radius: var(--radius);
+  cursor: pointer;
+}
+
+.copy-button:hover {
+  background: rgb(169 195 207 / 0.1);
+}
+
+.copy-button[data-state='copied'] {
+  color: var(--accent-strong);
+  border-color: var(--accent);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .contact-value,
+  .contact-arrow,
+  .copy-button {
+    transition:
+      text-decoration-color var(--duration-fast) ease,
+      color var(--duration-fast) ease,
+      background-color var(--duration-fast) ease,
+      border-color var(--duration-fast) ease,
+      transform var(--duration-base) var(--ease-out);
+  }
+
+  .copy-button:active {
+    transform: scale(0.97);
+  }
+
+  /* Entrada de la portada: solo CSS, así que también ocurre sobre el HTML prerenderizado y termina visible
+     aunque el JavaScript no llegue a cargar. */
+  .hero-eyebrow,
+  .hero-title-line,
+  .hero-lead,
+  .hero-sub,
+  .hero-actions,
+  .hero-facts,
+  .hero-contact {
+    animation: hero-rise 900ms var(--ease-out) both;
+  }
+
+  .hero-title-line:nth-child(1) {
+    animation-delay: 60ms;
+  }
+
+  .hero-title-line:nth-child(2) {
+    animation-delay: 140ms;
+  }
+
+  .hero-lead {
+    animation-delay: 240ms;
+  }
+
+  .hero-sub {
+    animation-delay: 300ms;
+  }
+
+  .hero-actions {
+    animation-delay: 360ms;
+  }
+
+  .hero-facts {
+    animation-delay: 440ms;
+  }
+
+  .hero-contact {
+    animation-delay: 520ms;
+  }
+
+  /* Las cartas salen de detrás de la primera y se reparten una sola vez. «backwards» y no «both»: al terminar,
+     transform vuelve a quedar libre para la transición de apertura. */
+  .work-card {
+    animation: deck-deal 800ms var(--ease-out) backwards;
+    animation-delay: calc(380ms + var(--i) * 110ms);
+    transition: transform 450ms var(--ease-out);
+  }
+
+  .work-card::after {
+    transition: opacity 450ms ease;
+  }
+
+  .work-deck-caption .arrow {
+    transition: transform var(--duration-base) var(--ease-out);
+  }
+
+  /* Al señalar el mazo o el botón «Ver proyectos», las cartas se abren un poco y la flecha baja. */
+  .hero:has(.hero-cta:focus-visible) .work-card {
+    transform: translate(calc(var(--i) * var(--spread)), calc(var(--i) * -1 * var(--spread)));
+  }
+
+  .hero:has(.hero-cta:focus-visible) .work-card::after {
+    opacity: calc(var(--i) * 0.06);
+  }
+
+  .hero:has(.hero-cta:focus-visible) .work-deck-caption .arrow {
+    transform: translateY(0.2rem);
+  }
+
+  @media (hover: hover) {
+    .work-deck:hover .work-card,
+    .hero:has(.hero-cta:hover) .work-card {
+      transform: translate(calc(var(--i) * var(--spread)), calc(var(--i) * -1 * var(--spread)));
+    }
+
+    .work-deck:hover .work-card::after,
+    .hero:has(.hero-cta:hover) .work-card::after {
+      opacity: calc(var(--i) * 0.06);
+    }
+
+    .work-deck:hover .work-deck-caption .arrow,
+    .hero:has(.hero-cta:hover) .work-deck-caption .arrow {
+      transform: translateY(0.2rem);
+    }
+  }
+}
+
+@keyframes hero-rise {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 1.25rem, 0);
+  }
+}
+
+@keyframes deck-deal {
+  from {
+    opacity: 0;
+    transform: translate(calc(-1 * var(--x)), var(--y));
+  }
+}
+
+@media (min-width: 48rem) {
+  .hero-grid {
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    column-gap: var(--grid-gap);
+    row-gap: 2rem;
+  }
+
+  .hero-eyebrow,
+  .hero-title,
+  .hero-lead,
+  .hero-sub,
+  .hero-actions,
+  .hero-contact {
+    grid-column: 1 / -1;
+  }
+
+  /* Entre tableta y escritorio el mazo y los datos comparten fila. */
+  .hero-work {
+    grid-column: 1 / span 6;
+  }
+
+  .hero-facts {
+    grid-column: 8 / -1;
+    align-self: end;
+  }
+}
+
+@media (min-width: 64rem) {
+  .hero {
+    padding-block: 2rem clamp(2.5rem, 4vw, 3.5rem);
+  }
+
+  .hero-grid {
+    row-gap: 1.25rem;
+  }
+
+  /* Texto, botones y datos breves en la columna izquierda; el mazo ocupa toda la derecha. */
+  .hero-eyebrow,
+  .hero-title,
+  .hero-lead,
+  .hero-actions,
+  .hero-facts {
+    grid-column: 1 / span 7;
+  }
+
+  .hero-eyebrow {
+    grid-row: 1;
+  }
+
+  .hero-title {
+    grid-row: 2;
+  }
+
+  .hero-lead {
+    grid-row: 3;
+  }
+
+  .hero-sub {
+    grid-column: 1 / span 6;
+    grid-row: 4;
+    margin-top: 0;
+  }
+
+  .hero-actions {
+    grid-row: 5;
+    margin-top: 0.5rem;
+  }
+
+  .hero-work {
+    grid-column: 8 / -1;
+    grid-row: 1 / span 6;
+    align-self: center;
+    justify-self: end;
+    width: 100%;
+    max-width: min(30rem, 40vw);
+  }
+
+  .hero-facts {
+    grid-row: 6;
+    max-width: 34rem;
+    margin-top: 1rem;
+  }
+
+  .hero-contact {
+    grid-row: 7;
+    margin-top: 1.5rem;
+  }
+
+  /* En escritorio el contacto es una franja de tres celdas, como una barra de estado al pie de la portada. */
+  .contact-list {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    border-block: 1px solid var(--rule);
+  }
+
+  .contact-list li,
+  .contact-list li:last-child {
+    padding-inline: 1.25rem;
+    border: 0;
+    border-left: 1px solid var(--rule);
+  }
+
+  .contact-list li:first-child {
+    padding-left: 0;
+    border-left: 0;
+  }
+}

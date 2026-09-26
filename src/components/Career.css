@@ -1,0 +1,147 @@
+.career {
+  padding-block: var(--space-section);
+  background: var(--white);
+}
+
+.career-layout {
+  display: grid;
+  gap: var(--space-block);
+}
+
+.career-header {
+  display: grid;
+  align-content: start;
+  gap: var(--space-stack);
+}
+
+.career-title {
+  font-family: var(--font-display);
+  font-size: var(--display-3);
+  font-weight: 350;
+  line-height: 1;
+  letter-spacing: -0.025em;
+}
+
+/* Eje vertical: cada paso dibuja su propio tramo, así la línea aparece junto con el paso al hacer scroll. */
+.career-step {
+  --marker: 0.75rem;
+  position: relative;
+  display: grid;
+  gap: 0.5rem;
+  padding-bottom: 2.5rem;
+  padding-left: 2rem;
+}
+
+.career-step::before {
+  content: '';
+  position: absolute;
+  top: 0.5rem;
+  bottom: -0.5rem;
+  left: calc(var(--marker) / 2 - 0.5px);
+  width: 1px;
+  background: var(--rule-strong);
+  opacity: 0.35;
+}
+
+.career-step:last-child {
+  padding-bottom: 0;
+}
+
+.career-step:last-child::before {
+  display: none;
+}
+
+.career-step::after {
+  content: '';
+  position: absolute;
+  top: 0.3rem;
+  left: 0;
+  width: var(--marker);
+  height: var(--marker);
+  background: var(--white);
+  border: 1.5px solid var(--accent);
+}
+
+.career-step:last-child::after {
+  background: var(--accent);
+}
+
+.career-when {
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  line-height: 1.4;
+  color: var(--fg);
+}
+
+.career-stage {
+  margin-bottom: 0.35rem;
+}
+
+.career-step-title {
+  font-family: var(--font-display);
+  font-size: var(--display-5);
+  font-weight: 400;
+  line-height: 1.15;
+}
+
+.career-place {
+  margin-top: 0.25rem;
+  font-weight: 600;
+}
+
+.career-description {
+  max-width: 36rem;
+  margin-top: 0.6rem;
+  color: var(--fg-muted);
+  text-wrap: pretty;
+}
+
+.career-link {
+  margin-top: 0.25rem;
+  font-size: 0.9375rem;
+}
+
+@media (min-width: 48rem) {
+  .career-step {
+    grid-template-columns: 11rem minmax(0, 1fr);
+    column-gap: var(--grid-gap);
+    padding-left: 0;
+  }
+
+  .career-when {
+    padding-top: 0.15rem;
+    padding-right: 2rem;
+    text-align: right;
+  }
+
+  .career-step::before {
+    left: calc(11rem + var(--grid-gap) / 2 - 0.5px);
+  }
+
+  .career-step::after {
+    left: calc(11rem + var(--grid-gap) / 2 - var(--marker) / 2);
+  }
+
+  .career-body {
+    padding-left: 1rem;
+  }
+}
+
+@media (min-width: 64rem) {
+  .career-layout {
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    column-gap: var(--grid-gap);
+  }
+
+  .career-header {
+    grid-column: 1 / span 4;
+    position: sticky;
+    top: calc(var(--header-height) + 2rem);
+    align-self: start;
+  }
+
+  .career-list {
+    grid-column: 6 / -1;
+    padding-top: 3.5rem;
+  }
+}

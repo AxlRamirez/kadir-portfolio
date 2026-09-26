@@ -1,8 +1,33 @@
+import { useEffect } from 'react'
+import Career from './components/Career.tsx'
+import Credentials from './components/Credentials.tsx'
+import Hero from './components/Hero.tsx'
+import DataLab from './components/lab/DataLab.tsx'
+import Projects from './components/Projects.tsx'
+import SiteFooter from './components/SiteFooter.tsx'
+import SiteHeader from './components/SiteHeader.tsx'
+import Skills from './components/Skills.tsx'
+import { setupReveal } from './motion/reveal.ts'
+
 function App() {
+  useEffect(() => setupReveal(), [])
+
   return (
-    <main>
-      <h1>Portafolio de Kadir Ramírez — en construcción</h1>
-    </main>
+    <>
+      <a className="skip-link" href="#contenido">
+        Saltar al contenido
+      </a>
+      <SiteHeader />
+      <main id="contenido">
+        <Hero />
+        <Projects />
+        <DataLab />
+        <Career />
+        <Skills />
+        <Credentials />
+      </main>
+      <SiteFooter />
+    </>
   )
 }
 
